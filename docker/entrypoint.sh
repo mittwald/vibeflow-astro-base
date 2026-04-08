@@ -55,7 +55,8 @@ REF_FILE="$SITE_DIR/.git/refs/heads/$WATCH_BRANCH"
 echo "Watching $REF_FILE for changes..."
 
 while inotifywait -qq -e modify,create "$REF_FILE"; do
-  echo "Branch $WATCH_BRANCH updated, rebuilding..."
+  NEW_SHA=$(cat "$REF_FILE" 2>/dev/null || echo "unknown")
+  echo "Branch $WATCH_BRANCH updated to $NEW_SHA, rebuilding..."
   /rebuild.sh
 done &
 
