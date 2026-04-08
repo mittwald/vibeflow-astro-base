@@ -13,8 +13,11 @@ fi
 SITE_UID=$(stat -c '%u' "$SITE_DIR")
 SITE_GID=$(stat -c '%g' "$SITE_DIR")
 
+echo "Site directory: $SITE_DIR (owner UID=$SITE_UID GID=$SITE_GID)"
+echo "Running as: $(id)"
+
 if [ "$(id -u)" = "0" ] && [ "$SITE_UID" != "0" ]; then
-  echo "Switching to UID $SITE_UID:$SITE_GID (owner of $SITE_DIR)..."
+  echo "Switching to UID $SITE_UID:$SITE_GID..."
   exec su-exec "$SITE_UID:$SITE_GID" "$0" "$@"
 fi
 
