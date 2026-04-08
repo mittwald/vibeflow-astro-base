@@ -109,4 +109,4 @@ Tests: initial build, HTTP 200, auto-rebuild on commit, port swap verification, 
 
 - **macOS/Docker Desktop**: inotifywait does not receive filesystem events through the VM. Use a Linux host for auto-rebuild.
 - **Concurrent rapid pushes**: Protected by flock — only one rebuild runs at a time. Pushes during a rebuild trigger a new rebuild after the current one finishes.
-- **pnpm store**: Stored in `/tmp` inside the container. Lost on container restart, meaning first build after restart downloads all dependencies.
+- **pnpm store**: The global package cache lives in `/tmp/pnpm-store` inside the container and is lost on restart. `node_modules` is written to the mounted volume and persists. First build after restart may be slightly slower due to store rebuild.
