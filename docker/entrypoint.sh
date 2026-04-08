@@ -9,6 +9,15 @@ if [ ! -f "$SITE_DIR/package.json" ]; then
   exit 1
 fi
 
+# Detect owner of the mounted site directory and re-exec as that user
+SITE_UID=$(stat -c '%u' "$SITE_DIR")
+SITE_GID=$(stat -c '%g' "$SITE_DIR")
+
+if [ "$(id -u)" = "0" ] && [ "$SITE_UID" != "0" ]; then
+  echo "Switching to UID $SITE_UID:$SITE_GID (owner of $SITE_DIR)..."
+  exec su-exec "$SITE_UID:$SITE_GID" "$0" "$@"
+fi
+
 cd "$SITE_DIR"
 
 # Keep pnpm store inside the container, not in the mounted volume

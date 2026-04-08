@@ -39,7 +39,6 @@ git clone "$TEST_DIR/server" "$TEST_DIR/clone"
 echo ""
 echo "=== Starting container ==="
 docker run -d --name "$CONTAINER" -p 8080:8080 \
-  --user "$(id -u):$(id -g)" \
   -v "$TEST_DIR/server:/site" \
   -e WATCH_BRANCH="$BRANCH" \
   "$IMAGE"
