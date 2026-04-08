@@ -17,8 +17,6 @@ echo "Site directory: $SITE_DIR (owner UID=$SITE_UID GID=$SITE_GID)"
 echo "Running as: $(id)"
 
 if [ "$(id -u)" = "0" ] && [ "$SITE_UID" != "0" ]; then
-  # Ensure non-root user can write to stdout/stderr for nginx logs
-  chmod 666 /dev/stdout /dev/stderr 2>/dev/null || true
   echo "Switching to UID $SITE_UID:$SITE_GID..."
   exec su-exec "$SITE_UID:$SITE_GID" "$0" "$@"
 fi
@@ -43,6 +41,11 @@ echo "Starting Astro server..."
 HOST=0.0.0.0 PORT=4321 node dist/server/entry.mjs &
 echo "$!" > /tmp/astro_pid
 echo "Astro server started on port 4321 (PID $!)"
+
+# Pipe nginx logs to stdout/stderr for docker logs
+touch /tmp/nginx-access.log /tmp/nginx-error.log
+tail -f /tmp/nginx-access.log &
+tail -f /tmp/nginx-error.log >&2 &
 
 echo "Starting nginx..."
 nginx -g "daemon off;" &
