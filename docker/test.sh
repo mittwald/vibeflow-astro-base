@@ -18,8 +18,7 @@ cleanup() {
   echo "=== Cleanup ==="
   docker stop "$CONTAINER" 2>/dev/null || true
   docker rm "$CONTAINER" 2>/dev/null || true
-  # pnpm store files are owned by root from the container
-  docker run --rm -v "$TEST_DIR:/cleanup" alpine rm -rf /cleanup
+  rm -rf "$TEST_DIR"
   echo "Done."
 }
 trap cleanup EXIT
@@ -40,6 +39,7 @@ git clone "$TEST_DIR/server" "$TEST_DIR/clone"
 echo ""
 echo "=== Starting container ==="
 docker run -d --name "$CONTAINER" -p 8080:8080 \
+  --user "$(id -u):$(id -g)" \
   -v "$TEST_DIR/server:/site" \
   -e WATCH_BRANCH="$BRANCH" \
   "$IMAGE"
@@ -47,7 +47,8 @@ docker run -d --name "$CONTAINER" -p 8080:8080 \
 echo "Waiting for initial build..."
 RETRIES=60
 while [ $RETRIES -gt 0 ]; do
-  if curl -s -o /dev/null -w "" http://localhost:8080/ 2>/dev/null; then
+  STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/ 2>/dev/null || echo "000")
+  if [ "$STATUS" = "200" ]; then
     break
   fi
   RETRIES=$((RETRIES - 1))
@@ -55,7 +56,9 @@ while [ $RETRIES -gt 0 ]; do
 done
 
 if [ $RETRIES -eq 0 ]; then
-  echo "FAIL: Server did not start within 120s"
+  echo "FAIL: Server did not start within 120s (last status: $STATUS)"
+  echo ""
+  echo "=== Container logs ==="
   docker logs "$CONTAINER"
   exit 1
 fi
