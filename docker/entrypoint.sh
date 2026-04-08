@@ -11,6 +11,10 @@ fi
 
 cd "$SITE_DIR"
 
+# Keep pnpm store inside the container, not in the mounted volume
+export PNPM_HOME="/tmp/pnpm"
+pnpm config set store-dir /tmp/pnpm-store
+
 # State files for port coordination between entrypoint and rebuild
 echo "4321" > /tmp/active_port
 echo "" > /tmp/astro_pid

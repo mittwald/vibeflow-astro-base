@@ -18,7 +18,8 @@ cleanup() {
   echo "=== Cleanup ==="
   docker stop "$CONTAINER" 2>/dev/null || true
   docker rm "$CONTAINER" 2>/dev/null || true
-  rm -rf "$TEST_DIR"
+  # pnpm store files are owned by root from the container
+  docker run --rm -v "$TEST_DIR:/cleanup" alpine rm -rf /cleanup
   echo "Done."
 }
 trap cleanup EXIT
