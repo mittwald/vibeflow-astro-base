@@ -98,7 +98,26 @@ else
 fi
 
 echo ""
-echo "=== Test 3: Site still serves after rebuild ==="
+echo "=== Test 3: Port swap happened ==="
+ACTIVE_PORT=$(docker exec "$CONTAINER" cat /tmp/active_port)
+if [ "$ACTIVE_PORT" = "4322" ]; then
+  echo "PASS: Active port switched to 4322"
+else
+  echo "FAIL: Expected active port 4322, got $ACTIVE_PORT"
+  exit 1
+fi
+
+# Verify nginx is proxying to the new port
+NGINX_UPSTREAM=$(docker exec "$CONTAINER" grep "server 127.0.0.1" /etc/nginx/nginx.conf)
+if echo "$NGINX_UPSTREAM" | grep -q "4322"; then
+  echo "PASS: nginx upstream points to 4322"
+else
+  echo "FAIL: nginx upstream not updated: $NGINX_UPSTREAM"
+  exit 1
+fi
+
+echo ""
+echo "=== Test 4: Site still serves after rebuild ==="
 STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/)
 if [ "$STATUS" = "200" ]; then
   echo "PASS: HTTP $STATUS"
