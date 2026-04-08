@@ -51,13 +51,17 @@ echo "Starting nginx..."
 nginx -g "daemon off;" &
 
 # Watch for branch ref changes
-REF_FILE="$SITE_DIR/.git/refs/heads/$WATCH_BRANCH"
-echo "Watching $REF_FILE for changes..."
+# Git uses atomic rename (write .lock then rename), so we watch the
+# directory for moved_to/create events on the branch file.
+REF_DIR="$SITE_DIR/.git/refs/heads"
+echo "Watching $REF_DIR/$WATCH_BRANCH for changes..."
 
-while inotifywait -qq -e modify,create "$REF_FILE"; do
-  NEW_SHA=$(cat "$REF_FILE" 2>/dev/null || echo "unknown")
-  echo "Branch $WATCH_BRANCH updated to $NEW_SHA, rebuilding..."
-  /rebuild.sh
+while inotifywait -qq -e moved_to,create "$REF_DIR"; do
+  NEW_SHA=$(cat "$REF_DIR/$WATCH_BRANCH" 2>/dev/null || echo "")
+  if [ -n "$NEW_SHA" ]; then
+    echo "Branch $WATCH_BRANCH updated to $NEW_SHA, rebuilding..."
+    /rebuild.sh
+  fi
 done &
 
 cleanup() {
