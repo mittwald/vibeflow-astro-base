@@ -1,0 +1,41 @@
+# Source template image for AI Worker
+# Packages the vibeflow-astro-base source + pre-installed node_modules
+# into a minimal image so the AI Worker can extract it at build time.
+#
+# Push to GHCR as: ghcr.io/mittwald/vibeflow-astro-base:source
+# Used by: ai_worker/Dockerfile (multi-stage COPY --from)
+
+FROM node:24-alpine AS deps
+
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+WORKDIR /app
+
+COPY package.json pnpm-lock.yaml ./
+
+RUN pnpm install --frozen-lockfile
+
+# ─── Final stage: source + pre-installed deps ───────────────────────────────
+FROM node:24-alpine
+
+WORKDIR /app
+
+# Config files
+COPY astro.config.mjs tsconfig.json components.json package.json pnpm-lock.yaml ./
+
+# Source tree
+COPY src ./src
+COPY public ./public
+
+# Pre-installed node_modules from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+
+# pnpm itself
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+LABEL org.opencontainers.image.title="vibeflow-astro-base-source"
+LABEL org.opencontainers.image.description="Astro 6 + shadcn/ui source template for VibeFlow AI Worker"
+LABEL org.opencontainers.image.source="https://github.com/mittwald/vibeflow-astro-base"
+
+# This is a data image — not meant to run
+CMD ["echo", "Source template image. Use in multi-stage builds only."]
