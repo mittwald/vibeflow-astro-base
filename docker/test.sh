@@ -27,19 +27,13 @@ echo "=== Building Docker image ==="
 docker build -t "$IMAGE" -f "$SCRIPT_DIR/Dockerfile" "$SCRIPT_DIR/"
 
 echo ""
-echo "=== Setting up test repos in $TEST_DIR ==="
-
-# "Server" repo — this gets mounted into the container
-git clone "$REPO_DIR" "$TEST_DIR/server"
-git -C "$TEST_DIR/server" config receive.denyCurrentBranch updateInstead
-
-# "Client" repo — we push from here to trigger rebuilds
-git clone "$TEST_DIR/server" "$TEST_DIR/clone"
+echo "=== Setting up test repo in $TEST_DIR ==="
+git clone "$REPO_DIR" "$TEST_DIR/site"
 
 echo ""
 echo "=== Starting container ==="
 docker run -d --name "$CONTAINER" -p 8080:8080 \
-  -v "$TEST_DIR/server:/site" \
+  -v "$TEST_DIR/site:/site" \
   -e WATCH_BRANCH="$BRANCH" \
   "$IMAGE"
 
@@ -73,12 +67,11 @@ else
 fi
 
 echo ""
-echo "=== Test 2: Push a change and wait for rebuild ==="
-cd "$TEST_DIR/clone"
+echo "=== Test 2: Commit a change and wait for rebuild ==="
+cd "$TEST_DIR/site"
 echo "<!-- rebuild test $(date) -->" >> src/pages/index.astro
 git add -A
 git commit -m "test rebuild trigger"
-git push
 
 echo "Waiting for rebuild (max 60s)..."
 sleep 10
