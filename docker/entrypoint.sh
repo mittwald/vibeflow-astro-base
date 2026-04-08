@@ -54,12 +54,14 @@ nginx -g "daemon off;" &
 # Git uses atomic rename (write .lock then rename), so we watch the
 # directory for moved_to/create events on the branch file.
 REF_DIR="$SITE_DIR/.git/refs/heads"
-echo "Watching $REF_DIR/$WATCH_BRANCH for changes..."
+CURRENT_SHA=$(cat "$REF_DIR/$WATCH_BRANCH" 2>/dev/null || echo "")
+echo "Watching $REF_DIR/$WATCH_BRANCH for changes (current: $CURRENT_SHA)..."
 
 while inotifywait -qq -e moved_to,create "$REF_DIR"; do
   NEW_SHA=$(cat "$REF_DIR/$WATCH_BRANCH" 2>/dev/null || echo "")
-  if [ -n "$NEW_SHA" ]; then
-    echo "Branch $WATCH_BRANCH updated to $NEW_SHA, rebuilding..."
+  if [ -n "$NEW_SHA" ] && [ "$NEW_SHA" != "$CURRENT_SHA" ]; then
+    echo "Branch $WATCH_BRANCH updated ($CURRENT_SHA -> $NEW_SHA), rebuilding..."
+    CURRENT_SHA=$NEW_SHA
     /rebuild.sh
   fi
 done &
