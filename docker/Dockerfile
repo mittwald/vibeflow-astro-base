@@ -5,8 +5,7 @@ RUN apk add --no-cache nginx git inotify-tools su-exec && \
 
 ENV NODE_ENV=production
 
-RUN mkdir -p /var/lib/nginx/tmp /var/log/nginx && \
-    chmod -R 777 /var/lib/nginx /var/log/nginx /etc/nginx /tmp
+RUN mkdir -p /var/lib/nginx/tmp /var/log/nginx
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY entrypoint.sh /entrypoint.sh

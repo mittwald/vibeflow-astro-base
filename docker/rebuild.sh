@@ -1,6 +1,13 @@
 #!/bin/sh
 set -e
 
+# Prevent concurrent rebuilds
+exec 9>/tmp/rebuild.lock
+if ! flock -n 9; then
+  echo "Rebuild already in progress, skipping"
+  exit 0
+fi
+
 SITE_DIR="${SITE_DIR:-/site}"
 cd "$SITE_DIR"
 
@@ -38,11 +45,22 @@ fi
 
 # Swap nginx upstream and reload
 sed -i "s/server 127.0.0.1:$ACTIVE_PORT/server 127.0.0.1:$NEW_PORT/" /etc/nginx/nginx.conf
-nginx -s reload
-echo "nginx switched to port $NEW_PORT"
+
+if nginx -t 2>/dev/null; then
+  nginx -s reload
+  echo "nginx switched to port $NEW_PORT"
+else
+  echo "nginx config invalid after port swap, reverting"
+  sed -i "s/server 127.0.0.1:$NEW_PORT/server 127.0.0.1:$ACTIVE_PORT/" /etc/nginx/nginx.conf
+  kill "$NEW_PID" 2>/dev/null || true
+  exit 1
+fi
 
 # Stop old server
-kill "$OLD_PID" 2>/dev/null || true
+if [ -n "$OLD_PID" ]; then
+  kill "$OLD_PID" 2>/dev/null || true
+  wait "$OLD_PID" 2>/dev/null || true
+fi
 
 # Update state
 echo "$NEW_PORT" > /tmp/active_port
