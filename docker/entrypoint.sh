@@ -18,6 +18,16 @@ pnpm build
 
 echo "Starting Astro server..."
 HOST=0.0.0.0 PORT=4321 node dist/server/entry.mjs &
+ASTRO_PID=$!
+
+cleanup() {
+  echo "Shutting down..."
+  kill "$ASTRO_PID" 2>/dev/null
+  wait "$ASTRO_PID" 2>/dev/null
+  nginx -s quit
+}
+trap cleanup TERM INT
 
 echo "Starting nginx..."
-exec nginx -g "daemon off;"
+nginx -g "daemon off;" &
+wait
