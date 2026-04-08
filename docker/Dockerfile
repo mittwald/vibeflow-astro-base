@@ -1,6 +1,6 @@
 FROM node:24-alpine
 
-RUN apk add --no-cache nginx && \
+RUN apk add --no-cache nginx inotify-tools git && \
     corepack enable && corepack prepare pnpm@latest --activate
 
 ENV NODE_ENV=production
