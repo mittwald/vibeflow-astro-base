@@ -6,10 +6,10 @@ const links = navigation.footer;
 ---
 
 <footer class="border-t border-border">
-  <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
+  <div class="mx-auto flex max-w-5xl flex-col items-center gap-2 px-4 py-4 sm:flex-row sm:justify-between sm:gap-0">
     <p class="text-sm text-muted-foreground">&copy; {name} {new Date().getFullYear()}</p>
     {links.length > 0 && (
-      <nav aria-label="Footer-Navigation"><ul class="flex items-center gap-6">
+      <nav aria-label="Footer-Navigation"><ul class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
         {links.map((link) => (
           <li>
             <a href={link.href} class="text-sm text-muted-foreground hover:text-foreground transition-colors">
