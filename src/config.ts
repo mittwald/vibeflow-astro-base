@@ -12,6 +12,7 @@
  */
 export const config = {
   name: "vibeflow",
+  tagline: "dein AI-Website-Builder",
   site: "https://example.com",
   navigation: {
     header: [

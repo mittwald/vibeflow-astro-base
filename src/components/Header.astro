@@ -1,26 +1,41 @@
 ---
 import { config } from "@/config";
 import { MobileNav } from "@/components/MobileNav";
+import { Icon } from "astro-icon/components";
 
 const { name, navigation } = config;
 const links = navigation.header;
+const currentPath = Astro.url.pathname;
 ---
 
 <header class="border-b border-border">
-  <nav class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-    <a href="/" class="text-lg font-semibold">{name}</a>
+  <nav aria-label="Hauptnavigation" class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
+    <a href="/" class="flex items-center gap-2 text-lg font-semibold" aria-label="Startseite">
+      <Icon name="lucide:sparkles" class="h-5 w-5 text-blue-600" />
+      {name}
+    </a>
 
     <div class="flex items-center gap-6">
       {/* Desktop */}
       {links.length > 0 && (
         <ul class="hidden md:flex items-center gap-6">
-          {links.map((link) => (
-            <li>
-              <a href={link.href} class="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                {link.label}
-              </a>
-            </li>
-          ))}
+          {links.map((link) => {
+            const isActive = currentPath === link.href || currentPath === link.href + "/";
+            return (
+              <li>
+                <a
+                  href={link.href}
+                  class:list={[
+                    "text-sm transition-colors",
+                    isActive ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground",
+                  ]}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  {link.label}
+                </a>
+              </li>
+            );
+          })}
         </ul>
       )}
 

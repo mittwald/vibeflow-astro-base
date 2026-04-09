@@ -2,9 +2,10 @@
 import RootLayout from "@/components/RootLayout.astro";
 import { Icon } from "astro-icon/components";
 import { Button } from "@/components/ui/button";
+import { config } from "@/config";
 ---
 
-<RootLayout title="Seite nicht gefunden">
+<RootLayout title={`Seite nicht gefunden – ${config.name}`}>
   <div class="flex flex-1 flex-col items-center justify-center px-4 text-center">
     <Icon name="lucide:search-x" class="mb-6 h-16 w-16 text-muted-foreground" />
     <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">404</h1>
