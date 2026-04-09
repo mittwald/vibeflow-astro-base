@@ -5,7 +5,7 @@ import * as v from "valibot";
 import nodemailer from "nodemailer";
 import { config } from "@/config";
 
-const MIN_SUBMIT_TIME_MS = 5000;
+const MIN_SUBMIT_TIME_MS = 10000;
 
 const ContactSchema = v.object({
   firstName: v.pipe(
@@ -33,10 +33,6 @@ export const POST: APIRoute = async ({ request }) => {
   const json = (key: string, value: string) =>
     Response.json({ [key]: value }, { status: key === "error" ? 400 : 200 });
 
-  if (!config.smtp.host || !config.smtp.user) {
-    return json("error", "SMTP ist nicht konfiguriert.");
-  }
-
   let data: FormData;
   try {
     data = await request.formData();
@@ -62,7 +58,7 @@ export const POST: APIRoute = async ({ request }) => {
   // Time-based check
   const elapsed = Date.now() - Number(raw._timestamp);
   if (isNaN(elapsed) || elapsed < MIN_SUBMIT_TIME_MS) {
-    return json("error", "Bitte warte einen Moment und versuche es erneut.");
+    return json("error", "Bitte versuche es in wenigen Sekunden erneut.");
   }
 
   // Validation
@@ -76,6 +72,16 @@ export const POST: APIRoute = async ({ request }) => {
   const fullName = `${firstName} ${lastName}`;
 
   // Send mail
+  if (
+    !config.smtp.host ||
+    !config.smtp.user ||
+    !config.smtp.pass ||
+    !config.smtp.from ||
+    !config.smtp.to
+  ) {
+    return json("error", "SMTP ist nicht konfiguriert.");
+  }
+
   let transporter: nodemailer.Transporter;
   try {
     transporter = nodemailer.createTransport({
