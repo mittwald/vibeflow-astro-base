@@ -13,6 +13,7 @@
 export const config = {
   name: "vibeflow",
   tagline: "dein AI-Website-Builder",
+  // Keep in sync with astro.config.mjs
   site: "https://example.com",
   navigation: {
     header: [
