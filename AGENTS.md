@@ -74,9 +74,9 @@ public/
 - Zentrale Einstellungen in `src/config.ts` (Name, URL, Navigation, API-Keys)
 - `config.name`: Seitenname, wird in Header, Footer, Mobile Nav und Seitentiteln verwendet
 - `config.tagline`: Tagline, wird auf der Startseite angezeigt
-- `config.site`: URL der Seite, wird für Sitemap, Canonical URLs und robots.txt genutzt
+- `config.site`: URL der Seite — **WICHTIG: muss auch in `astro.config.mjs` (Zeile 10) identisch gepflegt werden** (Astro kann `config.ts` nicht importieren wegen Vite-Init). `allowedDomains` in `astro.config.mjs` leitet sich automatisch aus der dortigen URL ab.
 - `config.navigation.header` / `config.navigation.footer`: Nav-Links als `{ label, href }[]`
-- `config.smtp`: SMTP-Zugangsdaten für Kontaktformular (host, port, secure, user, pass, from, to)
+- `config.smtp`: SMTP-Zugangsdaten für Kontaktformular. Default-Host: `mail.agenturserver.de`. STARTTLS: Port 25/587 (`secure: false`), SSL: Port 465 (`secure: true`). Default ist STARTTLS auf Port 587.
 - `config.erecht24.apiKey`: API-Key für eRecht24 Impressum/Datenschutz — ohne Key werden Platzhalter ausgeliefert
 
 ### SEO

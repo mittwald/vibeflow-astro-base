@@ -6,15 +6,17 @@ import node from "@astrojs/node";
 import icon from "astro-icon";
 import sitemap from "@astrojs/sitemap";
 import favicons from "astro-favicons";
+// Keep in sync with config.site in src/config.ts
+const site = "https://example.com";
+
 // https://astro.build/config
-// Keep site in sync with config.site in src/config.ts
 export default defineConfig({
-  site: "https://example.com",
+  site,
   output: "static",
   adapter: node({ mode: "standalone" }),
   security: {
     checkOrigin: true,
-    allowedDomains: [{ hostname: "example.com", protocol: "https" }],
+    allowedDomains: [{ hostname: new URL(site).hostname, protocol: "https" }],
   },
 
   fonts: [

@@ -26,7 +26,8 @@ export const config = {
     ],
   },
   smtp: {
-    host: "",
+    host: "mail.agenturserver.de",
+    // mail.agenturserver.de — STARTTLS: Port 25/587 (secure: false), SSL: Port 465 (secure: true)
     port: 587,
     secure: false,
     user: "",
