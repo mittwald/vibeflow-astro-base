@@ -13,6 +13,10 @@ export default defineConfig({
   site: config.site,
   output: "static",
   adapter: node({ mode: "standalone" }),
+  security: {
+    checkOrigin: true,
+    allowedDomains: [{ hostname: new URL(config.site).hostname, protocol: "https" }],
+  },
 
   fonts: [
     {

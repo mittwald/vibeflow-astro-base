@@ -4,8 +4,10 @@ set -e
 SITE_DIR="${SITE_DIR:-/site}"
 WATCH_BRANCH="${WATCH_BRANCH:-main}"
 
+log() { echo "[vibeflow] $1"; }
+
 if [ ! -f "$SITE_DIR/package.json" ]; then
-  echo "Error: No package.json found in $SITE_DIR"
+  log "ERROR: No package.json found in $SITE_DIR"
   exit 1
 fi
 
@@ -13,13 +15,14 @@ fi
 SITE_UID=$(stat -c '%u' "$SITE_DIR")
 SITE_GID=$(stat -c '%g' "$SITE_DIR")
 
-echo "Site directory: $SITE_DIR (owner UID=$SITE_UID GID=$SITE_GID)"
-echo "Running as: $(id)"
+log "Site directory: $SITE_DIR (UID=$SITE_UID GID=$SITE_GID)"
+log "Running as: $(id -un) ($(id -u):$(id -g))"
+log "Node: $(node -v) | pnpm: $(pnpm -v)"
 
 if [ "$(id -u)" = "0" ] && [ "$SITE_UID" != "0" ]; then
   # Set nginx dirs writable for the target user
   chown -R "$SITE_UID:$SITE_GID" /var/lib/nginx /var/log/nginx /etc/nginx /tmp/nginx-*.log 2>/dev/null || true
-  echo "Switching to UID $SITE_UID:$SITE_GID..."
+  log "Switching to UID $SITE_UID:$SITE_GID..."
   exec su-exec "$SITE_UID:$SITE_GID" "$0" "$@"
 fi
 
@@ -33,23 +36,36 @@ pnpm config set store-dir /tmp/pnpm-store
 echo "4321" > /tmp/active_port
 echo "" > /tmp/astro_pid
 
-echo "Installing dependencies..."
+log "Installing dependencies..."
 pnpm install --frozen-lockfile
 
-echo "Building Astro site..."
+log "Building site..."
 pnpm build
 
-echo "Starting Astro server..."
+# Log config summary
+node -e "
+import('./src/config.ts').then(m => {
+  const c = m.config;
+  const log = msg => console.log('[vibeflow] ' + msg);
+  log('Site: ' + c.site);
+  log('Name: ' + c.name);
+  log('SMTP: ' + (c.smtp.host ? c.smtp.user + '@' + c.smtp.host + ':' + c.smtp.port : 'not configured'));
+  log('eRecht24: ' + (c.erecht24.apiKey ? 'configured' : 'not configured (using fallback)'));
+  log('Nav header: ' + c.navigation.header.length + ' links | footer: ' + c.navigation.footer.length + ' links');
+}).catch(() => console.log('[vibeflow] WARNING: Could not read config'));
+"
+
+log "Starting Astro server on port 4321..."
 HOST=0.0.0.0 PORT=4321 node dist/server/entry.mjs &
 echo "$!" > /tmp/astro_pid
-echo "Astro server started on port 4321 (PID $!)"
+log "Astro server started (PID $!)"
 
 # Pipe nginx logs to stdout/stderr for docker logs
 touch /tmp/nginx-access.log /tmp/nginx-error.log
 tail -f /tmp/nginx-access.log &
 tail -f /tmp/nginx-error.log >&2 &
 
-echo "Starting nginx..."
+log "Starting nginx..."
 nginx -g "daemon off;" &
 
 # Watch for branch ref changes
@@ -57,19 +73,21 @@ nginx -g "daemon off;" &
 # directory for moved_to/create events on the branch file.
 REF_DIR="$SITE_DIR/.git/refs/heads"
 CURRENT_SHA=$(cat "$REF_DIR/$WATCH_BRANCH" 2>/dev/null || echo "")
-echo "Watching $REF_DIR/$WATCH_BRANCH for changes (current: $CURRENT_SHA)..."
+log "Watching branch '$WATCH_BRANCH' for changes (${CURRENT_SHA:0:8})"
 
 while inotifywait -qq -e moved_to,create "$REF_DIR"; do
   NEW_SHA=$(cat "$REF_DIR/$WATCH_BRANCH" 2>/dev/null || echo "")
   if [ -n "$NEW_SHA" ] && [ "$NEW_SHA" != "$CURRENT_SHA" ]; then
-    echo "Branch $WATCH_BRANCH updated ($CURRENT_SHA -> $NEW_SHA), rebuilding..."
+    log "Branch '$WATCH_BRANCH' updated (${CURRENT_SHA:0:8} -> ${NEW_SHA:0:8}), rebuilding..."
     CURRENT_SHA=$NEW_SHA
     /rebuild.sh
   fi
 done &
 
+log "Ready"
+
 cleanup() {
-  echo "Shutting down..."
+  log "Shutting down..."
   ASTRO_PID=$(cat /tmp/astro_pid 2>/dev/null)
   kill "$ASTRO_PID" 2>/dev/null || true
   nginx -s quit 2>/dev/null || true
