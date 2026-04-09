@@ -12,7 +12,7 @@ const site = "https://example.com";
 // https://astro.build/config
 export default defineConfig({
   site,
-  ...(process.env.WORKER_PREVIEW_BASE && { base: process.env.WORKER_PREVIEW_BASE }),
+  ...(process.env.WORKER_ASTRO_BASE && { base: process.env.WORKER_ASTRO_BASE }),
   output: "static",
   adapter: node({ mode: "standalone" }),
   security: {
