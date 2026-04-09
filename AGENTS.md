@@ -13,6 +13,7 @@ This is an Astro 6 site with React, Tailwind CSS 4, and shadcn/ui (Base Luma sty
 - **Icons**: astro-icon (Iconify-Sets, rendert zur Buildzeit als reines SVG). shadcn-Komponenten nutzen intern lucide-react.
 - **SEO**: Meta-Tags (title, description, canonical) im RootLayout, `@astrojs/sitemap`, dynamische `robots.txt`
 - **Favicons**: `astro-favicons` generiert aus `public/favicon.svg` alle Varianten (ICO, Apple Touch, Manifest)
+- **Kontaktformular**: React-Komponente mit valibot-Validierung, Honeypot, Time-Based Spam-Schutz, nodemailer (SMTP)
 - **Language**: TypeScript (strict), TSX for components
 
 ## Project Structure
@@ -25,6 +26,7 @@ src/
     Header.astro        # Responsive Header mit Desktop-Nav und mobilem Menü
     Footer.astro        # Footer mit Copyright und Links
     MobileNav.tsx       # Mobile Navigation (shadcn Sheet, von rechts)
+    ContactForm.tsx     # Kontaktformular (React, valibot, Honeypot, Time-Based)
     ui/                 # shadcn/ui components
   lib/
     utils.ts            # cn() utility for class merging
@@ -32,9 +34,11 @@ src/
   pages/
     *.astro             # Astro pages (pre-rendered by default)
     404.astro           # 404-Fehlerseite
+    kontakt.astro       # Kontaktseite mit Formular
     impressum.astro     # Impressum (eRecht24 API oder Fallback)
     datenschutz.astro   # Datenschutzerklärung (eRecht24 API oder Fallback)
     robots.txt.ts       # Dynamische robots.txt mit Sitemap-Link
+    api/contact.ts      # API-Endpoint für Kontaktformular (SSR)
   styles/
     global.css          # Tailwind imports, theme variables, dark mode
 public/
@@ -68,10 +72,12 @@ public/
 ### Site-Konfiguration
 
 - Zentrale Einstellungen in `src/config.ts` (Name, URL, Navigation, API-Keys)
-- `config.name`: Seitenname, wird in Header, Footer und Mobile Nav verwendet
+- `config.name`: Seitenname, wird in Header, Footer, Mobile Nav und Seitentiteln verwendet
+- `config.tagline`: Tagline, wird auf der Startseite angezeigt
 - `config.site`: URL der Seite, wird für Sitemap, Canonical URLs und robots.txt genutzt
 - `config.navigation.header` / `config.navigation.footer`: Nav-Links als `{ label, href }[]`
-- eRecht24 API-Key dort setzen für Impressum/Datenschutz — ohne Key werden Platzhalter ausgeliefert
+- `config.smtp`: SMTP-Zugangsdaten für Kontaktformular (host, port, secure, user, pass, from, to)
+- `config.erecht24.apiKey`: API-Key für eRecht24 Impressum/Datenschutz — ohne Key werden Platzhalter ausgeliefert
 
 ### SEO
 
@@ -97,6 +103,15 @@ public/
 - Weitere Sets per `pnpm add @iconify-json/<set>` hinzufügen
 - `astro-icon` kann NICHT in React-Komponenten verwendet werden, nur in `.astro`-Dateien
 - shadcn/ui-Komponenten nutzen intern `lucide-react` — das nicht entfernen
+
+### Kontaktformular
+
+- `/kontakt` mit React-Komponente `ContactForm.tsx` (`client:load`)
+- API-Endpoint `src/pages/api/contact.ts` (SSR, `prerender = false`)
+- Validierung serverseitig mit valibot (Vorname, Nachname, E-Mail, Nachricht Pflicht; Telefon optional)
+- Spam-Schutz: Honeypot-Feld (`_gotcha`) + Time-Based Check (min. 5s zwischen Laden und Absenden)
+- SMTP-Versand via nodemailer, Konfiguration in `config.smtp`
+- Ohne SMTP-Config → Fehlermeldung "SMTP ist nicht konfiguriert"
 
 ### Rechtliche Seiten
 
