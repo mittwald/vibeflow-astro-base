@@ -10,11 +10,9 @@ import favicons from "astro-favicons";
 const site = "https://example.com";
 
 // https://astro.build/config
-const isWorker = process.env.WORKER === "true";
-
 export default defineConfig({
   site,
-  ...(isWorker && { base: "/api/preview" }),
+  ...(process.env.WORKER_PREVIEW_BASE && { base: process.env.WORKER_PREVIEW_BASE }),
   output: "static",
   adapter: node({ mode: "standalone" }),
   security: {
