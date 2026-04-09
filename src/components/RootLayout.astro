@@ -6,35 +6,32 @@ import Header from "./Header.astro";
 import Footer from "./Footer.astro";
 
 interface Props {
-	title?: string;
-	description?: string;
+  title?: string;
+  description?: string;
 }
 
-const {
-	title = "Webseite",
-	description = "",
-} = Astro.props;
+const { title = "Webseite", description = "" } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <html lang="de">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="canonical" href={canonicalURL} />
-		<Font cssVariable="--font-inter" />
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="canonical" href={canonicalURL} />
+    <Font cssVariable="--font-inter" />
 
-		<title>{title}</title>
-		{description && <meta name="description" content={description} />}
-	</head>
-	<body class="flex min-h-screen flex-col">
-		<TooltipProvider>
-			<Header />
-			<main class="flex flex-1 flex-col">
-				<slot />
-			</main>
-			<Footer />
-		</TooltipProvider>
-	</body>
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <TooltipProvider>
+      <Header />
+      <main class="flex flex-1 flex-col">
+        <slot />
+      </main>
+      <Footer />
+    </TooltipProvider>
+  </body>
 </html>

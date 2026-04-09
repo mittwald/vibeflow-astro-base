@@ -8,36 +8,48 @@ const links = navigation.header;
 const currentPath = Astro.url.pathname;
 ---
 
-<header class="border-b border-border">
-  <nav aria-label="Hauptnavigation" class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-    <a href="/" class="flex items-center gap-2 text-lg font-semibold" aria-label="Startseite">
+<header class="border-border border-b">
+  <nav
+    aria-label="Hauptnavigation"
+    class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4"
+  >
+    <a
+      href="/"
+      class="flex items-center gap-2 text-lg font-semibold"
+      aria-label="Startseite"
+    >
       <Icon name="lucide:sparkles" class="h-5 w-5 text-blue-600" />
       {name}
     </a>
 
     <div class="flex items-center gap-6">
       {/* Desktop */}
-      {links.length > 0 && (
-        <ul class="hidden md:flex items-center gap-6">
-          {links.map((link) => {
-            const isActive = currentPath === link.href || currentPath === link.href + "/";
-            return (
-              <li>
-                <a
-                  href={link.href}
-                  class:list={[
-                    "text-sm transition-colors",
-                    isActive ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground",
-                  ]}
-                  aria-current={isActive ? "page" : undefined}
-                >
-                  {link.label}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+      {
+        links.length > 0 && (
+          <ul class="hidden items-center gap-6 md:flex">
+            {links.map((link) => {
+              const isActive =
+                currentPath === link.href || currentPath === link.href + "/";
+              return (
+                <li>
+                  <a
+                    href={link.href}
+                    class:list={[
+                      "text-sm transition-colors",
+                      isActive
+                        ? "text-foreground font-medium"
+                        : "text-muted-foreground hover:text-foreground",
+                    ]}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        )
+      }
 
       {/* Mobile */}
       <MobileNav links={links} name={name} client:load />

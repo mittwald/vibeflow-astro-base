@@ -16,9 +16,7 @@ export const config = {
   // Keep in sync with astro.config.mjs
   site: "https://example.com",
   navigation: {
-    header: [
-      { label: "Startseite", href: "/" },
-    ],
+    header: [{ label: "Startseite", href: "/" }],
     footer: [
       { label: "Kontakt", href: "/kontakt" },
       { label: "Impressum", href: "/impressum" },

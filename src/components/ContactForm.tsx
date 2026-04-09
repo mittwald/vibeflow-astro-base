@@ -1,22 +1,24 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 export function ContactForm() {
-  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "sending" | "success" | "error"
+  >("idle");
   const [message, setMessage] = useState("");
-  const timestampRef = useRef(Date.now().toString());
+  const [timestamp, setTimestamp] = useState(() => Date.now().toString());
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("sending");
 
     const formData = new FormData(e.currentTarget);
-    formData.set("_timestamp", timestampRef.current);
+    formData.set("_timestamp", timestamp);
 
     try {
       const res = await fetch("/api/contact", {
@@ -29,7 +31,7 @@ export function ContactForm() {
         setStatus("success");
         setMessage(data.success);
         (e.target as HTMLFormElement).reset();
-        timestampRef.current = Date.now().toString();
+        setTimestamp(Date.now().toString());
       } else {
         setStatus("error");
         setMessage(data.error);
@@ -44,18 +46,24 @@ export function ContactForm() {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="firstName">Vorname <span className="text-destructive">*</span></Label>
+          <Label htmlFor="firstName">
+            Vorname <span className="text-destructive">*</span>
+          </Label>
           <Input id="firstName" name="firstName" required minLength={2} />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="lastName">Nachname <span className="text-destructive">*</span></Label>
+          <Label htmlFor="lastName">
+            Nachname <span className="text-destructive">*</span>
+          </Label>
           <Input id="lastName" name="lastName" required minLength={2} />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="email">E-Mail-Adresse <span className="text-destructive">*</span></Label>
+          <Label htmlFor="email">
+            E-Mail-Adresse <span className="text-destructive">*</span>
+          </Label>
           <Input id="email" name="email" type="email" required />
         </div>
         <div className="space-y-2">
@@ -65,8 +73,16 @@ export function ContactForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="message">Nachricht <span className="text-destructive">*</span></Label>
-        <Textarea id="message" name="message" required minLength={10} className="min-h-[15rem]" />
+        <Label htmlFor="message">
+          Nachricht <span className="text-destructive">*</span>
+        </Label>
+        <Textarea
+          id="message"
+          name="message"
+          required
+          minLength={10}
+          className="min-h-[15rem]"
+        />
       </div>
 
       {/* Honeypot */}
@@ -74,28 +90,31 @@ export function ContactForm() {
         <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <input type="hidden" name="_timestamp" value={timestampRef.current} />
+      <input type="hidden" name="_timestamp" value={timestamp} />
 
-      <Button
-        type="submit"
-        className="w-full"
-        disabled={status === "sending"}
-      >
+      <Button type="submit" className="w-full" disabled={status === "sending"}>
         {status === "sending" ? "Wird gesendet…" : "Nachricht senden"}
       </Button>
 
-      <p className="text-sm text-muted-foreground">
-        Detaillierte Informationen zum Umgang mit Nutzerdaten findest du in unserer{" "}
-        <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-foreground">
+      <p className="text-muted-foreground text-sm">
+        Detaillierte Informationen zum Umgang mit Nutzerdaten findest du in
+        unserer{" "}
+        <a
+          href="/datenschutz"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-foreground underline underline-offset-4"
+        >
           Datenschutzerklärung
-        </a>.
+        </a>
+        .
       </p>
 
       {status === "success" && (
         <p className="text-sm text-green-600">{message}</p>
       )}
       {status === "error" && (
-        <p className="text-sm text-destructive">{message}</p>
+        <p className="text-destructive text-sm">{message}</p>
       )}
     </form>
   );

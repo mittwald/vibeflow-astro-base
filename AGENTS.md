@@ -119,9 +119,23 @@ public/
 - Ohne API-Key: Platzhalter-Texte (Mustermann-Daten)
 - Mit API-Key aber API-Fehler: Build bricht ab (kein stilles Fallback auf falsche Daten)
 
+### Linting & Formatting
+
+- **ESLint**: `pnpm lint` (check), `pnpm lint:fix` (auto-fix)
+- **Prettier**: `pnpm format` (write), `pnpm format:check` (check)
+- Config: `eslint.config.mjs`, `.prettierrc.mjs`
+- Prettier plugins: `prettier-plugin-astro`, `prettier-plugin-tailwindcss` (Tailwind class sorting)
+- ESLint plugins: `typescript-eslint`, `eslint-plugin-astro`, `@eslint-react/eslint-plugin`
+- `eslint-config-prettier` deaktiviert ESLint-Regeln die mit Prettier kollidieren
+- shadcn/ui-Komponenten (`src/components/ui/`) haben gelockerte Lint-Regeln (generierter Code)
+
 ### Path Aliases
 
 - `@/*` maps to `./src/*` (e.g., `import { Button } from "@/components/ui/button"`)
+
+## Environment Variables
+
+- `WORKER_ASTRO_BASE`: Setzt den Astro `base`-Pfad dynamisch (z.B. `/api/preview`). Wird verwendet wenn die App im Extension Preview gerendert wird. Wenn nicht gesetzt, wird kein `base` konfiguriert (Root `/`).
 
 ## Deployment
 

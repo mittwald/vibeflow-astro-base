@@ -6,16 +6,26 @@ import { config } from "@/config";
 ---
 
 <RootLayout title={`${config.name} – ${config.tagline}`}>
-	<div class="flex flex-1 flex-col items-center justify-center px-4 text-center">
-		<Icon name="lucide:sparkles" class="mb-6 h-16 w-16 text-blue-600" />
-		<h1 class="text-4xl font-bold tracking-tight sm:text-5xl">Herzlich willkommen</h1>
-		<p class="mt-4 text-lg text-muted-foreground">
-			bei <span class="font-semibold">{config.name}</span> – {config.tagline}
-		</p>
-		<a href="https://studio.mittwald.de" target="_blank" rel="noopener noreferrer">
-			<Button className="mt-8 bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 text-lg">
-				Zum mStudio
-			</Button>
-		</a>
-	</div>
+  <div
+    class="flex flex-1 flex-col items-center justify-center px-4 text-center"
+  >
+    <Icon name="lucide:sparkles" class="mb-6 h-16 w-16 text-blue-600" />
+    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
+      Herzlich willkommen
+    </h1>
+    <p class="text-muted-foreground mt-4 text-lg">
+      bei <span class="font-semibold">{config.name}</span> – {config.tagline}
+    </p>
+    <a
+      href="https://studio.mittwald.de"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <Button
+        className="mt-8 bg-blue-600 px-6 py-3 text-lg text-white hover:bg-blue-700"
+      >
+        Zum mStudio
+      </Button>
+    </a>
+  </div>
 </RootLayout>

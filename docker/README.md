@@ -38,10 +38,10 @@ docker run -p 80:8080 -v /path/to/astro-repo:/site -e WATCH_BRANCH=main astro-ng
 
 ## Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `SITE_DIR` | `/site` | Path to the Astro project inside the container |
-| `WATCH_BRANCH` | `main` | Git branch to watch for changes |
+| Variable       | Default | Description                                    |
+| -------------- | ------- | ---------------------------------------------- |
+| `SITE_DIR`     | `/site` | Path to the Astro project inside the container |
+| `WATCH_BRANCH` | `main`  | Git branch to watch for changes                |
 
 ## How It Works
 
@@ -73,22 +73,22 @@ If the new server fails to start or nginx config validation fails, the old serve
 
 ### Caching Strategy
 
-| Path | Cache | Reason |
-|------|-------|--------|
-| `/_astro/*` | 1 year, immutable | Hashed filenames — content changes = new filename |
-| Static assets (`.js`, `.css`, images, fonts) | 1 hour, must-revalidate | Files from `public/` without hash |
-| Everything else | No cache | Proxied to Astro (SSR or pre-rendered) |
+| Path                                         | Cache                   | Reason                                            |
+| -------------------------------------------- | ----------------------- | ------------------------------------------------- |
+| `/_astro/*`                                  | 1 year, immutable       | Hashed filenames — content changes = new filename |
+| Static assets (`.js`, `.css`, images, fonts) | 1 hour, must-revalidate | Files from `public/` without hash                 |
+| Everything else                              | No cache                | Proxied to Astro (SSR or pre-rendered)            |
 
 ## Astro Configuration
 
 The Astro project should use the Node adapter with static output (hybrid rendering):
 
 ```js
-import node from '@astrojs/node';
+import node from "@astrojs/node";
 
 export default defineConfig({
-  output: 'static',
-  adapter: node({ mode: 'standalone' }),
+  output: "static",
+  adapter: node({ mode: "standalone" }),
 });
 ```
 

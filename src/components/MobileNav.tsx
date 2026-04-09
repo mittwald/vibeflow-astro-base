@@ -19,9 +19,7 @@ export function MobileNav({ links, name }: { links: NavLink[]; name: string }) {
   return (
     <Sheet>
       <SheetTrigger
-        render={
-          <Button variant="ghost" size="icon" className="md:hidden" />
-        }
+        render={<Button variant="ghost" size="icon" className="md:hidden" />}
       >
         <MenuIcon className="h-5 w-5" />
         <span className="sr-only">Menü öffnen</span>
@@ -39,7 +37,7 @@ export function MobileNav({ links, name }: { links: NavLink[]; name: string }) {
             <a
               key={link.href}
               href={link.href}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="text-muted-foreground hover:text-foreground text-sm transition-colors"
             >
               {link.label}
             </a>

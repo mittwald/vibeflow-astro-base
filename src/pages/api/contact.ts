@@ -8,8 +8,16 @@ import { config } from "@/config";
 const MIN_SUBMIT_TIME_MS = 5000;
 
 const ContactSchema = v.object({
-  firstName: v.pipe(v.string(), v.trim(), v.minLength(2, "Vorname ist zu kurz")),
-  lastName: v.pipe(v.string(), v.trim(), v.minLength(2, "Nachname ist zu kurz")),
+  firstName: v.pipe(
+    v.string(),
+    v.trim(),
+    v.minLength(2, "Vorname ist zu kurz"),
+  ),
+  lastName: v.pipe(
+    v.string(),
+    v.trim(),
+    v.minLength(2, "Nachname ist zu kurz"),
+  ),
   email: v.pipe(v.string(), v.trim(), v.email("Ungültige E-Mail-Adresse")),
   phone: v.optional(v.pipe(v.string(), v.trim())),
   message: v.pipe(
@@ -23,10 +31,7 @@ const ContactSchema = v.object({
 
 export const POST: APIRoute = async ({ request }) => {
   const json = (key: string, value: string) =>
-    Response.json(
-      { [key]: value },
-      { status: key === "error" ? 400 : 200 },
-    );
+    Response.json({ [key]: value }, { status: key === "error" ? 400 : 200 });
 
   if (!config.smtp.host || !config.smtp.user) {
     return json("error", "SMTP ist nicht konfiguriert.");
