@@ -133,10 +133,6 @@ public/
 
 - `@/*` maps to `./src/*` (e.g., `import { Button } from "@/components/ui/button"`)
 
-## Environment Variables
-
-- `WORKER_ASTRO_BASE`: Setzt den Astro `base`-Pfad dynamisch (z.B. `/api/preview`). Wird verwendet wenn die App im Extension Preview gerendert wird. Wenn nicht gesetzt, wird kein `base` konfiguriert (Root `/`).
-
 ## Deployment
 
 Docker-based with nginx reverse proxy. See `docker/README.md` for details. Auto-rebuilds on git push to the watched branch.
