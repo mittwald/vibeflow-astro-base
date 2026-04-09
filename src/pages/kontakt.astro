@@ -1,0 +1,17 @@
+---
+import RootLayout from "@/components/RootLayout.astro";
+import { ContactForm } from "@/components/ContactForm";
+import { config } from "@/config";
+---
+
+<RootLayout title={`Kontakt – ${config.name}`} description="Nimm Kontakt mit uns auf.">
+  <div class="mx-auto max-w-3xl px-4 py-16">
+    <h1 class="text-3xl font-bold tracking-tight">Kontakt</h1>
+    <p class="mt-2 text-muted-foreground">
+      Hast du Fragen? Schreib uns eine Nachricht.
+    </p>
+    <div class="mt-8">
+      <ContactForm client:load />
+    </div>
+  </div>
+</RootLayout>

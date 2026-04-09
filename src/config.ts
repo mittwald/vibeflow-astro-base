@@ -19,9 +19,19 @@ export const config = {
       { label: "Startseite", href: "/" },
     ],
     footer: [
+      { label: "Kontakt", href: "/kontakt" },
       { label: "Impressum", href: "/impressum" },
       { label: "Datenschutz", href: "/datenschutz" },
     ],
+  },
+  smtp: {
+    host: "",
+    port: 587,
+    secure: false,
+    user: "",
+    pass: "",
+    from: "",
+    to: "",
   },
   erecht24: {
     apiKey: "",
