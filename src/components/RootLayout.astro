@@ -1,6 +1,9 @@
 ---
 import "../styles/global.css";
+import { Font } from "astro:assets";
 import { TooltipProvider } from "./ui/tooltip";
+import Header from "./Header.astro";
+import Footer from "./Footer.astro";
 
 interface Props {
 	title?: string;
@@ -15,13 +18,16 @@ const { title = "Webseite" } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
+		<Font cssVariable="--font-inter" />
 		<title>{title}</title>
 	</head>
-	<body>
+	<body class="flex min-h-screen flex-col">
 		<TooltipProvider>
-			<main>
+			<Header />
+			<main class="flex flex-1 flex-col">
 				<slot />
 			</main>
+			<Footer />
 		</TooltipProvider>
 	</body>
 </html>

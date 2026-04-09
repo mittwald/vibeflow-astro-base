@@ -1,0 +1,22 @@
+---
+import { config } from "@/config";
+
+const links = config.navigation.footer;
+---
+
+<footer class="border-t border-border">
+  <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
+    <p class="text-sm text-muted-foreground">&copy; vibeflow {new Date().getFullYear()}</p>
+    {links.length > 0 && (
+      <ul class="flex items-center gap-6">
+        {links.map((link) => (
+          <li>
+            <a href={link.href} class="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+</footer>
