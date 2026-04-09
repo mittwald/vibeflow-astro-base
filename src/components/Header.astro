@@ -2,12 +2,13 @@
 import { config } from "@/config";
 import { MobileNav } from "@/components/MobileNav";
 
-const links = config.navigation.header;
+const { name, navigation } = config;
+const links = navigation.header;
 ---
 
 <header class="border-b border-border">
   <nav class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-    <a href="/" class="text-lg font-semibold">vibeflow</a>
+    <a href="/" class="text-lg font-semibold">{name}</a>
 
     <div class="flex items-center gap-6">
       {/* Desktop */}
@@ -24,7 +25,7 @@ const links = config.navigation.header;
       )}
 
       {/* Mobile */}
-      <MobileNav links={links} client:load />
+      <MobileNav links={links} name={name} client:load />
     </div>
   </nav>
 </header>

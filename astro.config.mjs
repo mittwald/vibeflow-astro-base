@@ -4,9 +4,13 @@ import { defineConfig, fontProviders } from "astro/config";
 import react from "@astrojs/react";
 import node from "@astrojs/node";
 import icon from "astro-icon";
+import sitemap from "@astrojs/sitemap";
+import favicons from "astro-favicons";
+import { config } from "./src/config.ts";
 
 // https://astro.build/config
 export default defineConfig({
+  site: config.site,
   output: "static",
   adapter: node({ mode: "standalone" }),
 
@@ -24,5 +28,5 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-  integrations: [react(), icon()],
+  integrations: [react(), icon(), sitemap(), favicons()],
 });

@@ -15,7 +15,7 @@ interface NavLink {
   href: string;
 }
 
-export function MobileNav({ links }: { links: NavLink[] }) {
+export function MobileNav({ links, name }: { links: NavLink[]; name: string }) {
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -28,7 +28,7 @@ export function MobileNav({ links }: { links: NavLink[] }) {
         <SheetHeader>
           <SheetTitle>
             <a href="/" className="text-lg font-semibold">
-              vibeflow
+              {name}
             </a>
           </SheetTitle>
         </SheetHeader>

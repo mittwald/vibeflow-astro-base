@@ -11,25 +11,34 @@ This is an Astro 6 site with React, Tailwind CSS 4, and shadcn/ui (Base Luma sty
 - **Styling**: Tailwind CSS 4 via Vite plugin, `tw-animate-css`
 - **Fonts**: Google Fonts via Astro Font API (configured in `astro.config.mjs`, applied via `<Font />` in RootLayout)
 - **Icons**: astro-icon (Iconify-Sets, rendert zur Buildzeit als reines SVG). shadcn-Komponenten nutzen intern lucide-react.
+- **SEO**: Meta-Tags (title, description, canonical) im RootLayout, `@astrojs/sitemap`, dynamische `robots.txt`
+- **Favicons**: `astro-favicons` generiert aus `public/favicon.svg` alle Varianten (ICO, Apple Touch, Manifest)
 - **Language**: TypeScript (strict), TSX for components
 
 ## Project Structure
 
 ```
 src/
-  config.ts             # Zentrale Site-Konfiguration (API-Keys, Tracking-IDs, etc.)
+  config.ts             # Zentrale Site-Konfiguration (Name, URL, Navigation, API-Keys)
   components/
-    RootLayout.astro    # Root HTML layout with TooltipProvider and <Font />
+    RootLayout.astro    # Root HTML layout mit Header, Footer, Font, SEO-Meta
+    Header.astro        # Responsive Header mit Desktop-Nav und mobilem Menü
+    Footer.astro        # Footer mit Copyright und Links
+    MobileNav.tsx       # Mobile Navigation (shadcn Sheet, von rechts)
     ui/                 # shadcn/ui components
   lib/
     utils.ts            # cn() utility for class merging
     erecht24.ts         # eRecht24 API client (Impressum/Datenschutz)
   pages/
     *.astro             # Astro pages (pre-rendered by default)
+    404.astro           # 404-Fehlerseite
     impressum.astro     # Impressum (eRecht24 API oder Fallback)
     datenschutz.astro   # Datenschutzerklärung (eRecht24 API oder Fallback)
+    robots.txt.ts       # Dynamische robots.txt mit Sitemap-Link
   styles/
     global.css          # Tailwind imports, theme variables, dark mode
+public/
+  favicon.svg           # Quell-Favicon (wird von astro-favicons zu allen Formaten generiert)
 ```
 
 ## Conventions
@@ -58,9 +67,19 @@ src/
 
 ### Site-Konfiguration
 
-- Zentrale Einstellungen in `src/config.ts` (API-Keys, Tracking-IDs, Feature-Flags)
+- Zentrale Einstellungen in `src/config.ts` (Name, URL, Navigation, API-Keys)
+- `config.name`: Seitenname, wird in Header, Footer und Mobile Nav verwendet
+- `config.site`: URL der Seite, wird für Sitemap, Canonical URLs und robots.txt genutzt
+- `config.navigation.header` / `config.navigation.footer`: Nav-Links als `{ label, href }[]`
 - eRecht24 API-Key dort setzen für Impressum/Datenschutz — ohne Key werden Platzhalter ausgeliefert
-- Weitere Config-Werte (z.B. Analytics, SMTP) hier ergänzen
+
+### SEO
+
+- RootLayout akzeptiert `title` und `description` Props
+- Canonical URL wird automatisch aus `config.site` + Pfad generiert
+- Sitemap wird beim Build von `@astrojs/sitemap` erzeugt
+- robots.txt wird dynamisch generiert mit Sitemap-Link
+- Favicons werden von `astro-favicons` aus `public/favicon.svg` generiert
 
 ### Fonts
 
@@ -76,6 +95,7 @@ src/
 - Syntax: `<Icon name="lucide:search" />`, `<Icon name="mdi:home" />`
 - Vorinstalliertes Icon-Set: `@iconify-json/lucide`
 - Weitere Sets per `pnpm add @iconify-json/<set>` hinzufügen
+- `astro-icon` kann NICHT in React-Komponenten verwendet werden, nur in `.astro`-Dateien
 - shadcn/ui-Komponenten nutzen intern `lucide-react` — das nicht entfernen
 
 ### Rechtliche Seiten

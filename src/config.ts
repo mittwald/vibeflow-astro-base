@@ -11,9 +11,8 @@
  * - smtp: SMTP-Zugangsdaten für Kontaktformular (nodemailer)
  */
 export const config = {
-  erecht24: {
-    apiKey: "",
-  },
+  name: "vibeflow",
+  site: "https://example.com",
   navigation: {
     header: [
       { label: "Startseite", href: "/" },
@@ -22,5 +21,8 @@ export const config = {
       { label: "Impressum", href: "/impressum" },
       { label: "Datenschutz", href: "/datenschutz" },
     ],
+  },
+  erecht24: {
+    apiKey: "",
   },
 };
