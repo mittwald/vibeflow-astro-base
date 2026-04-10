@@ -6,6 +6,7 @@ import node from "@astrojs/node";
 import icon from "astro-icon";
 import sitemap from "@astrojs/sitemap";
 import favicons from "astro-favicons";
+import elementIds from "./plugins/vite-plugin-element-ids";
 // Keep in sync with config.site in src/config.ts
 const site = "https://example.com";
 
@@ -30,7 +31,10 @@ export default defineConfig({
   ],
 
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [
+      elementIds({ enabled: process.env.PUBLIC_VISUAL_EDITOR === "true" }),
+      tailwindcss(),
+    ],
   },
 
   integrations: [react(), icon(), sitemap(), favicons()],
