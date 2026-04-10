@@ -40,7 +40,7 @@ src/
     robots.txt.ts       # Dynamische robots.txt mit Sitemap-Link
     api/contact.ts      # API-Endpoint für Kontaktformular (SSR)
   styles/
-    global.css          # Tailwind imports, theme variables, dark mode
+    global.css          # Tailwind imports, theme variables
 public/
   favicon.svg           # Quell-Favicon (wird von astro-favicons zu allen Formaten generiert)
 ```
@@ -66,7 +66,6 @@ public/
 
 - Use Tailwind utility classes, not custom CSS
 - Theme colors are defined as CSS custom properties in `src/styles/global.css`
-- Dark mode uses the `.dark` class strategy (`@custom-variant dark (&:is(.dark *))`)
 - Use semantic color tokens: `bg-background`, `text-foreground`, `bg-primary`, etc.
 
 ### Site-Konfiguration
