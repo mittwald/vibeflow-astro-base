@@ -11,8 +11,8 @@
  * - smtp: SMTP-Zugangsdaten für Kontaktformular (nodemailer)
  */
 export const config = {
-  name: "vibeflow",
-  tagline: "dein AI-Website-Builder",
+  name: "Seitenname",
+  tagline: "Ihr Tagline",
   // Keep in sync with astro.config.mjs
   site: "https://example.com",
   navigation: {
@@ -24,8 +24,8 @@ export const config = {
     ],
   },
   smtp: {
-    host: "mail.agenturserver.de",
-    // mail.agenturserver.de — STARTTLS: Port 25/587 (secure: false), SSL: Port 465 (secure: true)
+    host: "",
+    // STARTTLS: Port 25/587 (secure: false), SSL: Port 465 (secure: true)
     port: 587,
     secure: false,
     user: "",

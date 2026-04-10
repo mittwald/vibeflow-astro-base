@@ -111,7 +111,7 @@ export function ContactForm() {
       </p>
 
       {status === "success" && (
-        <p className="text-sm text-green-600">{message}</p>
+        <p className="text-success text-sm">{message}</p>
       )}
       {status === "error" && (
         <p className="text-destructive text-sm">{message}</p>

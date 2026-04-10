@@ -1,26 +1,55 @@
 ---
 import RootLayout from "@/components/RootLayout.astro";
-import Hero from "@/components/Hero.astro";
+import { Button } from "@/components/ui/button";
+import { Icon } from "astro-icon/components";
 import { config } from "@/config";
 ---
 
 <RootLayout
   title={`${config.name} – ${config.tagline}`}
-  description="Ihr zuverlässiger Fachbetrieb vor Ort — schnell, professionell und zum fairen Preis."
+  description="Ihr zuverlässiger Partner vor Ort — schnell, professionell und zum fairen Preis."
 >
-  <Hero
-    badge="Meisterbetrieb · Seit 1987"
-    headline="Ihr zuverlässiger"
-    headlineAccent="Partner vor Ort."
-    description="Schnell, professionell und zum fairen Preis — für Privat- und Geschäftskunden in der Region. Rufen Sie uns an oder vereinbaren Sie einen Termin online."
-    phone="0123 / 456 78-0"
-    primaryCta={{ label: "Termin vereinbaren", href: "/kontakt" }}
-    secondaryCta={{ label: "Unsere Leistungen", href: "#leistungen" }}
-    rating={{ score: "4.9", count: "127" }}
-    stats={[
-      { value: "35+", label: "Jahre Erfahrung" },
-      { value: "2.400+", label: "zufriedene Kunden" },
-      { value: "24h", label: "Notdienst" },
-    ]}
-  />
+  <section class="mx-auto max-w-3xl px-4 py-20 text-center sm:py-28 lg:py-32">
+    <h1
+      class="text-foreground text-4xl leading-tight font-bold tracking-tight sm:text-5xl lg:text-6xl"
+    >
+      Ihr zuverlässiger
+      {" "}<span class="text-primary">Partner vor Ort.</span>
+    </h1>
+
+    <p
+      class="text-muted-foreground mx-auto mt-5 max-w-xl text-base leading-relaxed sm:text-lg"
+    >
+      Professionell, schnell und zum fairen Preis. Nehmen Sie Kontakt auf oder
+      vereinbaren Sie direkt einen Termin.
+    </p>
+
+    <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
+      <a href="/kontakt">
+        <Button size="lg" className="h-11 px-8 text-base font-semibold">
+          Termin vereinbaren
+        </Button>
+      </a>
+      <a href="#leistungen">
+        <Button variant="outline" size="lg" className="h-11 px-8 text-base">
+          Mehr erfahren
+        </Button>
+      </a>
+    </div>
+
+    <div class="mt-8 flex items-center justify-center gap-2">
+      <div class="flex">
+        {
+          Array.from({ length: 5 }).map(() => (
+            <Icon
+              name="lucide:star"
+              class="h-4 w-4 fill-primary text-primary"
+            />
+          ))
+        }
+      </div>
+      <span class="text-foreground text-sm font-medium">4.9</span>
+      <span class="text-muted-foreground text-sm">· 100+ Bewertungen</span>
+    </div>
+  </section>
 </RootLayout>
