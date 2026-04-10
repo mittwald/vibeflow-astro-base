@@ -1,0 +1,39 @@
+---
+interface Props {
+  enabled?: boolean;
+}
+
+const { enabled = import.meta.env.PUBLIC_VISUAL_EDITOR === "true" } =
+  Astro.props;
+---
+
+{
+  enabled && (
+    <>
+      <script is:inline>
+        window.__VISUAL_EDITOR_CONFIG__ = { enabled: true };
+      </script>
+      <script src="https://cdn.sitedraft.de/editor.js" type="module" />
+      <style is:inline>
+        .ve-loading-indicator {
+          position: fixed;
+          bottom: 16px;
+          right: 16px;
+          width: 10px;
+          height: 10px;
+          background: #3b82f6;
+          border-radius: 50%;
+          z-index: 99999;
+          pointer-events: none;
+          animation: ve-fade-out 0.4s ease 1s forwards;
+        }
+        @keyframes ve-fade-out {
+          to {
+            opacity: 0;
+          }
+        }
+      </style>
+      <div class="ve-loading-indicator" />
+    </>
+  )
+}

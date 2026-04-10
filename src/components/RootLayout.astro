@@ -4,6 +4,7 @@ import { Font } from "astro:assets";
 import { TooltipProvider } from "./ui/tooltip";
 import Header from "./Header.astro";
 import Footer from "./Footer.astro";
+import VisualEditorLoader from "./VisualEditorLoader.astro";
 
 interface Props {
   title?: string;
@@ -33,5 +34,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       </main>
       <Footer />
     </TooltipProvider>
+    <VisualEditorLoader />
   </body>
 </html>
