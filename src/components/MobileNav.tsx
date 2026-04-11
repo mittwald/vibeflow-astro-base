@@ -24,25 +24,28 @@ export function MobileNav({ links, name }: { links: NavLink[]; name: string }) {
         <MenuIcon className="h-5 w-5" />
         <span className="sr-only">Menü öffnen</span>
       </SheetTrigger>
-      <SheetContent side="right">
-        <SheetHeader>
-          <SheetTitle>
-            <a href="/" className="text-lg font-semibold">
-              {name}
-            </a>
-          </SheetTitle>
-        </SheetHeader>
-        <nav className="flex flex-col gap-4 px-4 pt-4">
-          {links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-muted-foreground hover:text-foreground text-sm transition-colors"
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
+      <SheetContent side="right" showCloseButton={false}>
+        <div className="flex h-full flex-col">
+          <SheetHeader className="border-border border-b px-6 py-5">
+            <SheetTitle>
+              <a href="/" className="text-lg font-semibold">
+                {name}
+              </a>
+            </SheetTitle>
+          </SheetHeader>
+
+          <nav className="flex flex-1 flex-col gap-1 px-4 py-4">
+            {links.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="text-foreground hover:bg-muted rounded-md px-3 py-3 text-base font-medium transition-colors"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+        </div>
       </SheetContent>
     </Sheet>
   );

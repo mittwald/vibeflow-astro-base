@@ -9,35 +9,46 @@ import { config } from "@/config";
   title={`${config.name} – ${config.tagline}`}
   description="Ihr zuverlässiger Partner vor Ort — schnell, professionell und zum fairen Preis."
 >
-  <section class="mx-auto max-w-3xl px-4 py-20 text-center sm:py-28 lg:py-32">
+  <section
+    class="mx-auto max-w-3xl px-5 py-16 text-center sm:px-4 sm:py-28 lg:py-32"
+  >
     <h1
-      class="text-foreground text-4xl leading-tight font-bold tracking-tight sm:text-5xl lg:text-6xl"
+      class="text-foreground text-3xl leading-tight font-bold tracking-tight sm:text-5xl lg:text-6xl"
     >
       Ihr zuverlässiger
       {" "}<span class="text-primary">Partner vor Ort.</span>
     </h1>
 
     <p
-      class="text-muted-foreground mx-auto mt-5 max-w-xl text-base leading-relaxed sm:text-lg"
+      class="text-muted-foreground mx-auto mt-4 max-w-xl text-base leading-relaxed sm:mt-5 sm:text-lg"
     >
       Professionell, schnell und zum fairen Preis. Nehmen Sie Kontakt auf oder
       vereinbaren Sie direkt einen Termin.
     </p>
 
-    <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
-      <a href="/kontakt">
-        <Button size="lg" className="h-11 px-8 text-base font-semibold">
+    <div
+      class="mt-6 flex flex-col items-center gap-3 sm:mt-7 sm:flex-row sm:justify-center"
+    >
+      <a href="/kontakt" class="w-full sm:w-auto">
+        <Button
+          size="lg"
+          className="h-12 w-full px-8 text-base font-semibold sm:h-11 sm:w-auto"
+        >
           Termin vereinbaren
         </Button>
       </a>
-      <a href="#leistungen">
-        <Button variant="outline" size="lg" className="h-11 px-8 text-base">
+      <a href="#leistungen" class="w-full sm:w-auto">
+        <Button
+          variant="outline"
+          size="lg"
+          className="h-12 w-full px-8 text-base sm:h-11 sm:w-auto"
+        >
           Mehr erfahren
         </Button>
       </a>
     </div>
 
-    <div class="mt-8 flex items-center justify-center gap-2">
+    <div class="mt-6 flex items-center justify-center gap-2 sm:mt-8">
       <div class="flex">
         {
           Array.from({ length: 5 }).map(() => (
