@@ -97,9 +97,9 @@ public/
 
 - `astro-icon` für Astro-Seiten: `import { Icon } from "astro-icon/components"`
 - Rendert zur Buildzeit als inline SVG — kein Client-JS, kein Laden
-- Syntax: `<Icon name="lucide:search" />`, `<Icon name="mdi:home" />`
-- Vorinstalliertes Icon-Set: `@iconify-json/lucide`
-- Weitere Sets per `pnpm add @iconify-json/<set>` hinzufügen
+- **Erlaubte Icon-Sets: nur `lucide` und `hugeicons`** — keine anderen Icon-Librarys verwenden.
+- Icons ausschließlich über `@iconify-json` Pakete einbinden. Vorinstalliert: `@iconify-json/lucide` und `@iconify-json/hugeicons`.
+- Syntax: `<Icon name="lucide:search" />`, `<Icon name="hugeicons:star" />`
 - `astro-icon` kann NICHT in React-Komponenten verwendet werden, nur in `.astro`-Dateien
 - shadcn/ui-Komponenten nutzen intern `lucide-react` — das nicht entfernen
 
