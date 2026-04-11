@@ -35,6 +35,9 @@ export default defineConfig({
       elementIds({ enabled: process.env.PUBLIC_VISUAL_EDITOR === "true" }),
       tailwindcss(),
     ],
+    server: {
+      allowedHosts: true,
+    },
   },
 
   integrations: [react(), icon(), sitemap(), favicons()],
