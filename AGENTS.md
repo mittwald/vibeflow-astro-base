@@ -132,6 +132,86 @@ public/
 
 - `@/*` maps to `./src/*` (e.g., `import { Button } from "@/components/ui/button"`)
 
+### Bilder
+
+- Für lokale Bilder (im `src/`-Verzeichnis): Immer `import { Image } from 'astro:assets'` verwenden, nicht rohes `<img>`. Astro optimiert die Bilder automatisch (WebP/AVIF, responsive srcset, lazy loading).
+- Syntax: `<Image src={import("../assets/hero.jpg")} alt="Beschreibung" width={1200} height={630} />`
+- Für Bilder in `public/`: Normales `<img>` ist okay, aber `loading="lazy"` und `decoding="async"` setzen (außer beim Hero-Bild above the fold).
+- Für externe Bilder (URLs): `<img>` mit `loading="lazy"` und expliziten `width`/`height` Attributen um Layout Shifts zu vermeiden.
+- Jedes `<img>` und `<Image>` braucht ein aussagekräftiges `alt`-Attribut. Dekorative Bilder: `alt=""`.
+
+### Scroll-Animationen
+
+- `ScrollReveal` (`src/components/ScrollReveal.astro`) ist optional — nicht jede Seite braucht Animationen.
+- Nutze es sparsam: Hero-Bereich braucht keine Animation (ist sofort sichtbar), Sektionen unterhalb des Folds können dezent reinfahren.
+- Maximal 2-3 verschiedene Animationstypen pro Seite, sonst wirkt es unruhig.
+- Staffelung über `delay` nur bei Elementen die gleichzeitig sichtbar werden (z.B. Feature-Karten in einer Reihe), nicht bei Elementen die untereinander stehen.
+- Respektiert `prefers-reduced-motion` automatisch.
+- Verwendung:
+
+```astro
+<ScrollReveal animation="fade-up">
+  <section class="py-20">
+    <h2>Features</h2>
+  </section>
+</ScrollReveal>
+
+<!-- Mit Staffelung -->
+<div class="grid grid-cols-3 gap-8">
+  <ScrollReveal animation="fade-up" delay={0}>
+    <div>Feature 1</div>
+  </ScrollReveal>
+  <ScrollReveal animation="fade-up" delay={100}>
+    <div>Feature 2</div>
+  </ScrollReveal>
+  <ScrollReveal animation="fade-up" delay={200}>
+    <div>Feature 3</div>
+  </ScrollReveal>
+</div>
+```
+
+### OG-Image
+
+- RootLayout unterstützt `ogImage` und `ogType` Props.
+- OG/Twitter-Image-Tags werden nur gerendert wenn `ogImage` explizit gesetzt ist. Ohne `ogImage` wird kein Bild-Tag ausgegeben.
+- Jedes Projekt sollte, wenn es sich anbietet, ein eigenes OG-Image erstellen (1200×630px) und als `ogImage`-Prop an RootLayout übergeben: `<RootLayout ogImage="/og.png">`
+- Für Unterseiten mit eigenem OG-Image: den Pfad pro Seite setzen.
+
+## Design-Prinzipien
+
+### Visuelle Identität pro Projekt
+
+Jedes Projekt bekommt eine eigene visuelle Persönlichkeit. Bevor du Code schreibst, entscheide dich für einen Gestaltungsansatz: Ist die Seite luftig und elegant? Kompakt und direkt? Verspielt? Editorial? Bold und plakatartig?
+
+Leite daraus konkrete Entscheidungen ab: Wie groß ist die Typografie? Wie viel Whitespace? Wie dicht stehen Elemente beieinander? Welche Farben dominieren?
+
+### Anti-Patterns — vermeide diese AI-typischen Muster
+
+- **Nicht das Standard-Layout kopieren**: Nicht jede Seite braucht das Muster "zentrierter Hero → 3er-Karten-Grid → Testimonials → CTA". Das ist das Standardlayout das jeder AI-Builder ausspuckt. Brich bewusst davon ab.
+- **Nicht jede Sektion braucht zentrierten Titel mit Untertitel darunter.** Titel können links stehen, können übergroß sein, können in die nächste Sektion reinragen, können fehlen.
+- **Nicht jede Aufzählung muss ein gleichmäßiges Grid sein.** Nutze auch: gestaffelte Layouts, eine einzelne große Karte neben zwei kleinen, horizontale Scrollbereiche, oder einfach gut gesetzte Fließtext-Absätze.
+- **Vermeide generische Stockfoto-Beschreibungen.** Wenn Bilder gebraucht werden, nutze Platzhalter-Services oder beschreibe dem Kunden was dort hin soll.
+- **Vermeide den "AI-Look"**: Übermäßiger Einsatz von Schatten, abgerundete Karten mit Border und gleich große Icons in einem Grid.
+- **Vermeide einheitliche Container-Breiten**: Nicht jede Sektion in `max-w-7xl mx-auto` packen. Manche Sektionen dürfen volle Breite nutzen, manche bewusst schmaler sein (`max-w-2xl`, `max-w-4xl`). Der Wechsel der Container-Breiten erzeugt visuellen Rhythmus.
+
+### Gestaltungsregeln
+
+- **Kontrast durch Abwechslung**: Wechsle zwischen Sektionen mit viel Whitespace und kompakteren Bereichen. Zwischen hellen und farbigen Hintergründen. Zwischen großer und normaler Typografie. Der Wechsel erzeugt Spannung.
+- **Weniger ist oft besser**: Eine Landing Page mit 4 starken Sektionen schlägt eine mit 8 generischen. Nicht jede mögliche Information muss auf die Startseite.
+- **Typografie als Gestaltungselement**: Übergroße Headlines (`text-5xl` bis `text-8xl`), bewusst gesetzte `leading-tight`/`tracking-tight` Kombinationen, oder ein einzelner Satz der eine ganze Viewport-Höhe einnimmt — Typografie kann das stärkste visuelle Element der Seite sein.
+- **Farbflächen statt Karten**: Statt alles in `bg-card rounded-lg border shadow` Karten zu packen, nutze farbige Sektions-Hintergründe (`bg-primary`, `bg-muted`, eine Custom-Farbe aus dem Theme), volle Breite, mit Content darin. Das wirkt erwachsener als Karten-Layouts.
+- **Bewusster Einsatz von `bg-primary`**: Die Primärfarbe nicht nur für Buttons nutzen, sondern auch für ganze Sektionen, große Flächen, oder typografische Akzente. Das verankert die Markenfarbe in der Seite.
+
+### Responsive-Strategie
+
+- Mobile ist nicht "Desktop kleiner machen". Überlege bei jeder Sektion: Was ändert sich auf Mobile tatsächlich? Große Headlines werden kleiner, aber nicht winzig. Mehrspaltige Layouts stacken, aber vielleicht nicht alle — manche Inhalte können auf Mobile einfach entfallen oder anders dargestellt werden.
+- Nutze die volle Breite des Tailwind Breakpoint-Systems: `sm:`, `md:`, `lg:`, `xl:` — nicht nur `md:` für den einen Breakpoint.
+
+### Komponenten-Einsatz
+
+- shadcn/ui-Komponenten sind Werkzeuge, nicht Bausteine. Nutze sie für interaktive Elemente (Accordion für FAQs, Sheet für Mobile-Nav, Button für CTAs), aber bau Sektions-Layouts in reinem HTML + Tailwind. Eine Landing Page die hauptsächlich aus shadcn-Cards und -Badges besteht sieht aus wie ein Dashboard, nicht wie eine Marketing-Seite.
+- Vermeide Dashboard-UI-Komponenten auf Landing Pages: Table, Command, Combobox, Calendar, Resizable, Menubar haben auf einer Landing Page nichts verloren.
+
 ## Deployment
 
 Docker-based with nginx reverse proxy. See `docker/README.md` for details. Auto-rebuilds on git push to the watched branch.

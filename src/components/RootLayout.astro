@@ -5,15 +5,24 @@ import { TooltipProvider } from "./ui/tooltip";
 import Header from "./Header.astro";
 import Footer from "./Footer.astro";
 import VisualEditorLoader from "./VisualEditorLoader.astro";
+import { config } from "../config";
 
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
+  ogType?: string;
 }
 
-const { title = "Webseite", description = "" } = Astro.props;
+const {
+  title = "Webseite",
+  description = "",
+  ogImage,
+  ogType = "website",
+} = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : undefined;
 ---
 
 <html lang="de">
@@ -25,6 +34,24 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+
+    {/* Open Graph */}
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:type" content={ogType} />
+    {ogImageURL && <meta property="og:image" content={ogImageURL} />}
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:site_name" content={config.name} />
+
+    {/* Twitter Card */}
+    <meta
+      name="twitter:card"
+      content={ogImageURL ? "summary_large_image" : "summary"}
+    />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    {ogImageURL && <meta name="twitter:image" content={ogImageURL} />}
   </head>
   <body class="flex min-h-screen flex-col">
     <TooltipProvider>
