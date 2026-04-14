@@ -30,15 +30,14 @@ export default function elementIds(options: ElementIdsOptions = {}): any {
         return null;
       }
       if (!id.endsWith('.astro')) return null;
-      if (!code.includes('data-astro-source-loc')) return null;
 
       const filePath = relative(root, id).replace(/\\/g, '/');
 
-      // Read the raw .astro source from disk for accurate opening line numbers.
-      // Astro compiles .astro → JS in its load hook before our transform runs,
-      // so the `code` we receive is compiled JS. But Astro annotates each tag
-      // with data-astro-source-loc="closingLine:closingCol". We match these
-      // against tags parsed from the raw source to recover the opening line.
+      // Read the raw .astro source from disk for accurate line numbers.
+      // Astro compiles .astro → JS in its transform hook before ours runs,
+      // so `code` is compiled JS — but the HTML tags are preserved verbatim
+      // inside $$render template literals. We match compiled tags to raw
+      // source tags by per-tag-type sequential order.
       let raw: string;
       try {
         raw = readFileSync(id, 'utf-8');
@@ -50,8 +49,7 @@ export default function elementIds(options: ElementIdsOptions = {}): any {
       const rawTags = collectRawTags(raw, rawStarts);
       if (rawTags.length === 0) return null;
 
-      const lookup = buildOpeningLineLookup(rawTags);
-      return injectIds(code, lookup, filePath);
+      return injectIds(code, rawTags, filePath);
     },
   };
 }
@@ -61,7 +59,6 @@ export default function elementIds(options: ElementIdsOptions = {}): any {
 interface RawTag {
   tagName: string;
   openingLine: number;
-  closingLine: number;
 }
 
 /* ── Raw source parsing ────────────────────────────────────────────── */
@@ -103,7 +100,7 @@ function lineAt(starts: number[], offset: number): number {
   return lo + 1;
 }
 
-/** Collect visible HTML tags from the raw .astro template with opening and closing lines. */
+/** Collect visible HTML tags from the raw .astro template with opening line numbers. */
 function collectRawTags(src: string, starts: number[]): RawTag[] {
   const tags: RawTag[] = [];
   let i = findTemplateStart(src);
@@ -133,7 +130,6 @@ function collectRawTags(src: string, starts: number[]): RawTag[] {
             tags.push({
               tagName: parsed.tagName,
               openingLine: lineAt(starts, i),
-              closingLine: lineAt(starts, parsed.tagEnd - 1), // line of `>`
             });
           }
 
@@ -189,110 +185,108 @@ function parseRawTag(src: string, start: number): ParsedRawTag | null {
   return null;
 }
 
-/* ── Opening-line lookup ───────────────────────────────────────────── */
-
-/**
- * Build a map from `"closingLine:tagName:occurrence"` → `openingLine`.
- * This lets us match tags found via `data-astro-source-loc` (which records the
- * closing `>` line) back to their opening `<` line in the raw source.
- */
-function buildOpeningLineLookup(tags: RawTag[]): Map<string, number> {
-  const counts = new Map<string, number>();
-  const lookup = new Map<string, number>();
-
-  for (const t of tags) {
-    const gk = `${t.closingLine}:${t.tagName}`;
-    const occ = counts.get(gk) ?? 0;
-    counts.set(gk, occ + 1);
-    lookup.set(`${gk}:${occ}`, t.openingLine);
-  }
-
-  return lookup;
-}
-
 /* ── Compiled-output injection ─────────────────────────────────────── */
 
+/**
+ * Find visible HTML opening tags in the compiled Astro JS output and inject
+ * data-element-id attributes. Tags are matched to raw source by per-tag-type
+ * sequential order — this works because Astro preserves HTML tags verbatim
+ * inside $$render template literals and maintains source order.
+ */
 function injectIds(
   compiled: string,
-  lookup: Map<string, number>,
+  rawTags: RawTag[],
   filePath: string,
-): string {
-  // Phase 1: find all data-astro-source-loc anchors and resolve opening lines
-  const locRe = /data-astro-source-loc="(\d+):(\d+)"/g;
-  const closingCounts = new Map<string, number>();
+): string | null {
+  // Phase 1: find all visible HTML opening tags in the compiled output
+  const tagRe = /<([a-z][a-z0-9]*)/g;
 
-  interface Injection {
+  interface CompiledTag {
+    tagName: string;
+    insertAt: number; // position right after `<tagname`
+  }
+
+  const compiledTags: CompiledTag[] = [];
+  let m: RegExpExecArray | null;
+
+  while ((m = tagRe.exec(compiled)) !== null) {
+    const tagName = m[1];
+    if (!VISIBLE_TAGS.has(tagName)) continue;
+
+    // Skip if data-element-id is already present on this tag
+    const closeAngle = compiled.indexOf('>', m.index);
+    if (closeAngle !== -1) {
+      const tagRegion = compiled.slice(m.index, closeAngle);
+      if (tagRegion.includes('data-element-id=')) continue;
+    }
+
+    compiledTags.push({
+      tagName,
+      insertAt: m.index + 1 + tagName.length,
+    });
+  }
+
+  if (compiledTags.length === 0) return null;
+
+  // Phase 2: build per-tag-type queues from raw source (opening lines in order)
+  const rawQueues = new Map<string, number[]>();
+  for (const tag of rawTags) {
+    if (!rawQueues.has(tag.tagName)) rawQueues.set(tag.tagName, []);
+    rawQueues.get(tag.tagName)!.push(tag.openingLine);
+  }
+  const queueIndex = new Map<string, number>();
+
+  // Phase 3: pair compiled tags with raw opening lines
+  interface PairedTag {
     insertAt: number;
     openingLine: number;
     tagName: string;
   }
 
-  const injections: Injection[] = [];
-  let m: RegExpExecArray | null;
+  const paired: PairedTag[] = [];
 
-  while ((m = locRe.exec(compiled)) !== null) {
-    const closingLine = parseInt(m[1], 10);
-    const tagName = findTagNameBefore(compiled, m.index);
-    if (!tagName || !VISIBLE_TAGS.has(tagName)) continue;
+  for (const ct of compiledTags) {
+    const queue = rawQueues.get(ct.tagName);
+    if (!queue) continue;
+    const idx = queueIndex.get(ct.tagName) ?? 0;
+    if (idx >= queue.length) continue;
 
-    // Skip if data-element-id already present on this tag
-    const regionBefore = compiled.slice(Math.max(0, m.index - 300), m.index);
-    if (regionBefore.includes('data-element-id=')) continue;
-
-    const gk = `${closingLine}:${tagName}`;
-    const occ = closingCounts.get(gk) ?? 0;
-    closingCounts.set(gk, occ + 1);
-
-    const openingLine = lookup.get(`${gk}:${occ}`);
-    if (openingLine === undefined) continue;
-
-    injections.push({ insertAt: m.index, openingLine, tagName });
+    paired.push({
+      insertAt: ct.insertAt,
+      openingLine: queue[idx],
+      tagName: ct.tagName,
+    });
+    queueIndex.set(ct.tagName, idx + 1);
   }
 
-  if (injections.length === 0) return compiled;
+  if (paired.length === 0) return null;
 
-  // Phase 2: compute index suffixes for duplicate opening-line + tag combos
-  const openTotals = new Map<string, number>();
-  for (const inj of injections) {
-    const k = `${inj.openingLine}:${inj.tagName}`;
-    openTotals.set(k, (openTotals.get(k) || 0) + 1);
+  // Phase 4: compute index suffixes for duplicate openingLine+tagName combos
+  const totals = new Map<string, number>();
+  for (const p of paired) {
+    const k = `${p.openingLine}:${p.tagName}`;
+    totals.set(k, (totals.get(k) || 0) + 1);
   }
 
-  // Phase 3: build output
-  const openIndices = new Map<string, number>();
+  // Phase 5: build output with injected data-element-id attributes
+  const indices = new Map<string, number>();
   let out = '';
   let cursor = 0;
 
-  for (const inj of injections) {
-    const k = `${inj.openingLine}:${inj.tagName}`;
-    const total = openTotals.get(k)!;
-    const idx = openIndices.get(k) ?? 0;
-    openIndices.set(k, idx + 1);
+  for (const p of paired) {
+    const k = `${p.openingLine}:${p.tagName}`;
+    const total = totals.get(k)!;
+    const idx = indices.get(k) ?? 0;
+    indices.set(k, idx + 1);
 
-    let eid = `${filePath}:${inj.openingLine}:${inj.tagName}`;
+    let eid = `${filePath}:${p.openingLine}:${p.tagName}`;
     if (total > 1) eid += `:${idx}`;
 
-    out += compiled.slice(cursor, inj.insertAt);
-    out += `data-element-id="${eid}" `;
-    cursor = inj.insertAt;
+    out += compiled.slice(cursor, p.insertAt);
+    out += ` data-element-id="${eid}"`;
+    cursor = p.insertAt;
   }
 
   out += compiled.slice(cursor);
   return out;
-}
-
-/** Search backwards from `pos` to find the nearest `<tagname` in the compiled output. */
-function findTagNameBefore(src: string, pos: number): string | null {
-  const limit = Math.max(0, pos - 10000);
-  for (let i = pos - 1; i >= limit; i--) {
-    if (src[i] === '<' && i + 1 < src.length) {
-      const next = src[i + 1];
-      if (next >= 'a' && next <= 'z') {
-        let j = i + 1;
-        while (j < src.length && /[a-zA-Z0-9\-]/.test(src[j])) j++;
-        return src.slice(i + 1, j);
-      }
-    }
-  }
-  return null;
 }
