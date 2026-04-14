@@ -4,6 +4,7 @@
   "exclude": ["dist"],
   "compilerOptions": {
     "baseUrl": ".",
+    "moduleResolution": "nodenext",
     "paths": {
       "@/*": ["./src/*"]
     },
