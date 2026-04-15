@@ -18,11 +18,11 @@ interface NavLink {
 export function MobileNav({ links, name }: { links: NavLink[]; name: string }) {
   return (
     <Sheet>
-      <SheetTrigger
-        render={<Button variant="ghost" size="icon" className="md:hidden" />}
-      >
-        <MenuIcon className="h-5 w-5" />
-        <span className="sr-only">Menü öffnen</span>
+      <SheetTrigger asChild>
+        <Button variant="ghost" size="icon" className="md:hidden">
+          <MenuIcon className="h-5 w-5" />
+          <span className="sr-only">Menü öffnen</span>
+        </Button>
       </SheetTrigger>
       <SheetContent side="right" showCloseButton={false}>
         <div className="flex h-full flex-col">
