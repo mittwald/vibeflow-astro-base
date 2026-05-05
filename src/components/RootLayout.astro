@@ -52,6 +52,17 @@ const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : undefined;
     <meta name="twitter:title" content={title} />
     {description && <meta name="twitter:description" content={description} />}
     {ogImageURL && <meta name="twitter:image" content={ogImageURL} />}
+
+    <script>
+      if (import.meta.hot) {
+        import.meta.hot.on("vite:beforeFullReload", (payload) => {
+          const until = (window as any).__veSuppressReloadUntil;
+          if (until && Date.now() < until) {
+            payload.preventDefault?.();
+          }
+        });
+      }
+    </script>
   </head>
   <body class="flex min-h-screen flex-col">
     <TooltipProvider>
