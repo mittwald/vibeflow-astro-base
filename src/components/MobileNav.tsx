@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -32,6 +33,9 @@ export function MobileNav({ links, name }: { links: NavLink[]; name: string }) {
                 {name}
               </a>
             </SheetTitle>
+            <SheetDescription className="sr-only">
+              Hauptnavigation
+            </SheetDescription>
           </SheetHeader>
 
           <nav className="flex flex-1 flex-col gap-1 px-4 py-4">
