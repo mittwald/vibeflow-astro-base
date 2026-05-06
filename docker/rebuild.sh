@@ -23,8 +23,8 @@ while [ -f "$PENDING_FILE" ]; do
   rm -f "$PENDING_FILE"
 
   cd "$SITE_DIR"
-  log "Pulling latest changes..."
-  git pull --ff-only || true
+  # No pull needed: worker pushes directly into this non-bare repo, and
+  # receive.denyCurrentBranch=updateInstead keeps the working tree in sync.
 
   ACTIVE_PORT=$(cat /tmp/active_port)
   if [ "$ACTIVE_PORT" = "4321" ]; then
