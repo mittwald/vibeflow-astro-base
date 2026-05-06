@@ -55,7 +55,7 @@ const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : undefined;
 
     <script>
       if (import.meta.hot) {
-        import.meta.hot.on("vite:beforeFullReload", (payload) => {
+        import.meta.hot.on("vite:beforeFullReload", (payload: { preventDefault?: () => void }) => {
           const until = (window as any).__veSuppressReloadUntil;
           if (!until || Date.now() >= until) return;
           payload.preventDefault?.();
