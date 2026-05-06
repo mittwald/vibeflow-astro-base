@@ -36,7 +36,21 @@ export default defineConfig({
       tailwindcss(),
     ],
     optimizeDeps: {
-      include: ["lucide-react", "react", "react-dom", "react-dom/client"],
+      include: [
+        "react",
+        "react-dom",
+        "react-dom/client",
+        "lucide-react",
+        "radix-ui",
+        "class-variance-authority",
+        "clsx",
+        "tailwind-merge",
+        "cmdk",
+        "embla-carousel-react",
+        "react-day-picker",
+        "react-resizable-panels",
+        "vaul",
+      ],
     },
     server: {
       allowedHosts: [".preview.sitedraft.de"],
