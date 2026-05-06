@@ -55,10 +55,12 @@ const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : undefined;
 
     <script>
       if (import.meta.hot) {
-        import.meta.hot.on("vite:beforeFullReload", (payload: { preventDefault?: () => void }) => {
+        import.meta.hot.on("vite:beforeFullReload", (payload) => {
           const until = (window as any).__veSuppressReloadUntil;
           if (!until || Date.now() >= until) return;
-          payload.preventDefault?.();
+          if ("preventDefault" in payload && typeof payload.preventDefault === "function") {
+            payload.preventDefault();
+          }
           // Reload stylesheets in place so CSS changes (new Tailwind utilities,
           // edited globals) are visible without a hard reload that would
           // disrupt the visual editor's selection/scroll state.
