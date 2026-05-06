@@ -40,6 +40,9 @@ export default defineConfig({
     },
     server: {
       allowedHosts: [".preview.sitedraft.de"],
+      watch: {
+        ignored: ["**/.pnpm-store/**", "**/.git/**"],
+      },
     },
   },
 
