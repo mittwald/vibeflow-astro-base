@@ -38,6 +38,9 @@ export default defineConfig({
     optimizeDeps: {
       include: ["lucide-react", "react", "react-dom", "react-dom/client"],
     },
+    server: {
+      allowedHosts: [".preview.sitedraft.de"],
+    },
   },
 
   devToolbar: {
