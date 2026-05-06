@@ -35,6 +35,9 @@ export default defineConfig({
       elementIds({ enabled: process.env.PUBLIC_VISUAL_EDITOR === "true" }),
       tailwindcss(),
     ],
+    optimizeDeps: {
+      include: ["lucide-react", "react", "react-dom", "react-dom/client"],
+    },
   },
 
   devToolbar: {
