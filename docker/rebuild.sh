@@ -52,7 +52,8 @@ while [ -f "$PENDING_FILE" ]; do
   "
 
   log "Starting Astro server on port $NEW_PORT..."
-  HOST=0.0.0.0 PORT=$NEW_PORT node dist/server/entry.mjs &
+  # Close fd 9 (lock fd) so the long-running server doesn't keep the rebuild lock held.
+  HOST=0.0.0.0 PORT=$NEW_PORT node dist/server/entry.mjs 9<&- &
   NEW_PID=$!
 
   # Wait for new server to be ready
