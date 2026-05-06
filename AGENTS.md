@@ -68,6 +68,13 @@ public/
 - Theme colors are defined as CSS custom properties in `src/styles/global.css`
 - Use semantic color tokens: `bg-background`, `text-foreground`, `bg-primary`, etc.
 
+### Border-Radius
+
+- Always give cards, buttons, inputs, sheets, panels, and similar surfaces an explicit Tailwind `rounded-*` class — even when the current design is sharp-cornered.
+- Never hardcode `rounded-none` and never omit the class because the value happens to be 0 right now.
+- The actual radius is controlled globally by the `--radius` CSS variable in `src/styles/global.css`. Keeping the classes in place lets the whole site flip between sharp and soft corners by changing one variable.
+- Stick to the shadcn scale: small inline elements `rounded-sm` / `rounded-md`, cards and panels `rounded-lg` / `rounded-xl`, prominent hero or feature surfaces `rounded-2xl` / `rounded-3xl`.
+
 ### Site-Konfiguration
 
 - Zentrale Einstellungen in `src/config.ts` (Name, URL, Navigation, API-Keys)
