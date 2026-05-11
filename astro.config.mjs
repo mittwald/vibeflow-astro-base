@@ -57,6 +57,13 @@ export default defineConfig({
       watch: {
         ignored: ["**/.pnpm-store/**", "**/.git/**"],
       },
+      hmr: process.env.PREVIEW_DOMAIN
+        ? {
+            protocol: "wss",
+            host: process.env.PREVIEW_DOMAIN,
+            clientPort: 443,
+          }
+        : undefined,
     },
   },
 
