@@ -70,9 +70,9 @@ public/
 
 ### Border-Radius
 
-- Always give cards, buttons, inputs, sheets, panels, and similar surfaces an explicit Tailwind `rounded-*` class — even when the current design is sharp-cornered.
-- Never hardcode `rounded-none` and never omit the class because the value happens to be 0 right now.
-- The actual radius is controlled globally by the `--radius` CSS variable in `src/styles/global.css`. Keeping the classes in place lets the whole site flip between sharp and soft corners by changing one variable.
+- Anything that reads as a card, panel, button, input, sheet, or visible border must carry an explicit Tailwind `rounded-*` class so it stays tied to the global radius. The point is that the whole site can be flipped between sharp and soft corners later by editing one value.
+- The actual radius is controlled globally by the `--radius` CSS variable in `src/styles/global.css`. Tailwind's `rounded-*` utilities derive their values from it, so any surface with a `rounded-*` class follows that single knob.
+- `rounded-none` is allowed as a deliberate local override — when a specific element should stay sharp regardless of the global setting. Don't reach for it just because the current theme happens to render at radius 0; that hides the element from the global switch.
 - Stick to the shadcn scale: small inline elements `rounded-sm` / `rounded-md`, cards and panels `rounded-lg` / `rounded-xl`, prominent hero or feature surfaces `rounded-2xl` / `rounded-3xl`.
 
 ### Site-Konfiguration
