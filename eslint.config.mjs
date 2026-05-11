@@ -1,14 +1,15 @@
 import js from "@eslint/js";
+import { defineConfig } from "eslint/config";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 import eslintPluginAstro from "eslint-plugin-astro";
 import eslintReact from "@eslint-react/eslint-plugin";
 import eslintConfigPrettier from "eslint-config-prettier";
 
-export default tseslint.config(
+export default defineConfig([
   js.configs.recommended,
-  ...tseslint.configs.recommended,
-  ...eslintPluginAstro.configs.recommended,
+  tseslint.configs.recommended,
+  eslintPluginAstro.configs.recommended,
   {
     files: ["**/*.{tsx,jsx}"],
     ...eslintReact.configs.recommended,
@@ -44,4 +45,4 @@ export default tseslint.config(
   {
     ignores: ["dist/", ".astro/", "node_modules/"],
   },
-);
+]);

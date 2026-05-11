@@ -13,7 +13,7 @@ const { enabled = import.meta.env.PUBLIC_VISUAL_EDITOR === "true" } =
       <script is:inline>
         window.__VISUAL_EDITOR_CONFIG__ = { enabled: true };
       </script>
-      <script src="https://cdn.sitedraft.de/editor.js" type="module" />
+      <script is:inline src="https://cdn.sitedraft.de/editor.js" type="module" />
       <style is:inline>
         .ve-loading-indicator {
           position: fixed;

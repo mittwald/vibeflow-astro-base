@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type SyntheticEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -13,7 +13,7 @@ export function ContactForm() {
   const [message, setMessage] = useState("");
   const [timestamp, setTimestamp] = useState(() => Date.now().toString());
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("sending");
 
