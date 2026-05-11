@@ -1,5 +1,6 @@
 import { relative } from 'node:path';
 import { readFileSync } from 'node:fs';
+import type { Plugin } from 'vite';
 
 export interface ElementIdsOptions {
   enabled?: boolean;
@@ -14,7 +15,7 @@ const VISIBLE_TAGS = new Set([
   'video', 'audio', 'canvas', 'details', 'summary', 'dialog',
 ]);
 
-export default function elementIds(options: ElementIdsOptions = {}): any {
+export default function elementIds(options: ElementIdsOptions = {}): Plugin {
   let root = '';
 
   return {
@@ -154,7 +155,7 @@ interface ParsedRawTag {
 function parseRawTag(src: string, start: number): ParsedRawTag | null {
   let i = start + 1;
   const nameStart = i;
-  while (i < src.length && /[a-zA-Z0-9\-]/.test(src[i])) i++;
+  while (i < src.length && /[a-zA-Z0-9-]/.test(src[i])) i++;
   const tagName = src.slice(nameStart, i);
   if (!tagName || tagName[0] < 'a' || tagName[0] > 'z') return null;
 
