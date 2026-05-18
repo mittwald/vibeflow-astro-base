@@ -75,6 +75,13 @@ public/
 - `rounded-none` is allowed as a deliberate local override — when a specific element should stay sharp regardless of the global setting. Don't reach for it just because the current theme happens to render at radius 0; that hides the element from the global switch.
 - Stick to the shadcn scale: small inline elements `rounded-sm` / `rounded-md`, cards and panels `rounded-lg` / `rounded-xl`, prominent hero or feature surfaces `rounded-2xl` / `rounded-3xl`.
 
+### Equal-Height Cards in Rows
+
+- When two or more cards sit side-by-side in a grid or flex row, they must all render at the same height — the height of the tallest one in the row. Uneven card frames look broken even when each card is internally fine. The content inside cards is allowed to vary (longer descriptions, different CTAs); only the outer frame must stay uniform.
+- Default pattern: parent is `grid grid-cols-N gap-…` and each card is a direct grid child. CSS Grid stretches row cells to match the tallest content automatically — no `h-full` needed unless something disables the stretch.
+- If the card has internal vertical layout (e.g. a CTA pinned to the bottom), use `flex flex-col` on the card and `mt-auto` on the bottom-anchored element so it fills the extra space the stretch produces.
+- If you wrap each card in an extra container (animation wrapper, scroll-reveal, link), put `h-full` on the wrapper AND on the card so the stretch propagates through. In flex-row setups, keep the parent's default `items-stretch` — don't switch to `items-start` / `items-center`, which would undo the stretch.
+
 ### Site-Konfiguration
 
 - Zentrale Einstellungen in `src/config.ts` (Name, URL, Navigation, API-Keys)
