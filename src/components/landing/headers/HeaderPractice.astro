@@ -1,0 +1,30 @@
+---
+interface NavLink { label: string; href: string }
+interface Props {
+  name: string;
+  links?: readonly NavLink[];
+  appointment?: NavLink;
+}
+
+const { name, links = [], appointment } = Astro.props;
+---
+
+<header data-section="header" data-block-family="header-practice-appointment" class="border-b border-border bg-background/95 backdrop-blur">
+  <nav class="mx-auto flex max-w-6xl items-center justify-between gap-5 px-5 py-4" aria-label="Hauptnavigation">
+    <a href="/" class="font-heading text-lg font-semibold tracking-tight">{name}</a>
+
+    {links.length > 0 && (
+      <ul class="hidden items-center gap-7 md:flex">
+        {links.map((link) => (
+          <li><a href={link.href} class="text-sm text-muted-foreground transition-colors hover:text-foreground">{link.label}</a></li>
+        ))}
+      </ul>
+    )}
+
+    {appointment && (
+      <a href={appointment.href} class="hidden min-h-11 items-center rounded-full border border-border px-4 text-sm font-semibold text-foreground transition-colors hover:bg-muted md:inline-flex">
+        {appointment.label}
+      </a>
+    )}
+  </nav>
+</header>

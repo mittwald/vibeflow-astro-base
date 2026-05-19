@@ -1,13 +1,30 @@
-export const sectionBlueprints = {
-  heroes: ["HeroLocalService", "HeroEditorial", "HeroPoster", "HeroSplitVisual"],
-  proof: ["LocalTrustStrip", "ProofBand", "QuoteTakeover"],
-  features: ["ServiceMosaic", "FeatureRail", "FeatureBento"],
-  process: ["ProcessTimeline"],
-  cta: ["CtaFooterTakeover"],
-} as const;
-
-export const recommendedHomeRhythms = [
-  ["HeroLocalService", "LocalTrustStrip", "ServiceMosaic", "ProofBand", "ProcessTimeline", "CtaFooterTakeover"],
-  ["HeroEditorial", "ServiceMosaic", "QuoteTakeover", "ProofBand", "CtaFooterTakeover"],
-  ["HeroPoster", "ProofBand", "FeatureRail", "ProcessTimeline", "CtaFooterTakeover"],
+export const sectionBlueprints = [
+  "header-local-minimal",
+  "header-trade-service",
+  "header-restaurant-reservation",
+  "header-practice-appointment",
+  "header-studio-booking",
+  "hero-local-problem-split",
+  "hero-editorial-service",
+  "hero-poster-local",
+  "hero-quiet-trust",
+  "hero-map-area",
+  "services-offset-bento",
+  "services-plain-list",
+  "services-alternating-rows",
+  "services-price-board",
+  "proof-local-strip",
+  "proof-numbers-band",
+  "proof-before-after",
+  "process-simple-steps",
+  "process-timeline",
+  "story-split",
+  "opening-hours-block",
+  "area-map-text",
+  "contact-split-local",
+  "contact-phone-first",
+  "cta-boxed",
+  "cta-full-bleed",
 ] as const;
+
+export type SectionBlueprint = (typeof sectionBlueprints)[number];

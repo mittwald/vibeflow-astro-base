@@ -1,0 +1,24 @@
+---
+interface Props {
+  quote: string;
+  author?: string;
+  context?: string;
+}
+
+const { quote, author, context } = Astro.props;
+---
+
+<section data-section="testimonial" data-block-family="proof-quote-card" class="scroll-mt-32 px-5 py-20">
+  <figure class="mx-auto max-w-5xl border border-border bg-card p-8 shadow-sm md:p-12">
+    <blockquote class="font-heading text-3xl font-semibold leading-tight tracking-tight sm:text-5xl">
+      &quot;{quote}&quot;
+    </blockquote>
+    {(author || context) && (
+      <figcaption class="mt-8 text-sm text-muted-foreground">
+        {author && <span class="font-semibold text-foreground">{author}</span>}
+        {author && context && <span> - </span>}
+        {context && <span>{context}</span>}
+      </figcaption>
+    )}
+  </figure>
+</section>

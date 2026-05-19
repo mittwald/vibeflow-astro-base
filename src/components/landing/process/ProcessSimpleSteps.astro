@@ -1,0 +1,31 @@
+---
+interface Step { title: string; text: string }
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  text?: string;
+  steps: readonly Step[];
+}
+
+const { eyebrow, headline, text, steps } = Astro.props;
+---
+
+<section id="ablauf" data-section="process" data-block-family="process-simple-steps" class="scroll-mt-32 bg-background px-5 py-20 lg:py-28">
+  <div class="mx-auto max-w-5xl">
+    {eyebrow && <p class="text-sm font-semibold uppercase tracking-[0.24em] text-primary">{eyebrow}</p>}
+    <h2 class="mt-5 max-w-3xl font-heading text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">{headline}</h2>
+    {text && <p class="mt-5 max-w-2xl leading-relaxed text-muted-foreground">{text}</p>}
+
+    <div class="mt-10 divide-y divide-border border-y border-border">
+      {steps.map((step, index) => (
+        <article class="grid gap-5 py-6 md:grid-cols-[6rem_1fr] md:py-8">
+          <p class="font-heading text-4xl font-semibold tracking-tight text-primary">{String(index + 1).padStart(2, "0")}</p>
+          <div>
+            <h3 class="font-heading text-2xl font-semibold tracking-tight">{step.title}</h3>
+            <p class="mt-2 leading-relaxed text-muted-foreground">{step.text}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,36 @@
+---
+interface Service { title: string; text: string; image?: { src: string; alt: string } }
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  services: readonly Service[];
+}
+
+const { eyebrow, headline, services } = Astro.props;
+---
+
+<section id="leistungen" data-section="services" data-block-family="services-alternating-rows" class="scroll-mt-32 px-5 py-20 lg:py-28">
+  <div class="mx-auto max-w-7xl">
+    <div class="max-w-3xl">
+      {eyebrow && <p class="text-sm font-semibold uppercase tracking-[0.24em] text-primary">{eyebrow}</p>}
+      <h2 class="mt-5 font-heading text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">{headline}</h2>
+    </div>
+
+    <div class="mt-12 space-y-6">
+      {services.map((service, index) => (
+        <article class:list={["grid gap-6 border border-border bg-card p-5 md:grid-cols-2 md:items-center md:p-8", index % 2 === 1 && "md:[&>*:first-child]:order-2"]}>
+          {service.image ? (
+            <img src={service.image.src} alt={service.image.alt} width="720" height="520" loading="lazy" decoding="async" class="aspect-[4/3] w-full object-cover" />
+          ) : (
+            <div class="aspect-[4/3] w-full bg-surface-tint dot-grid" aria-hidden="true" />
+          )}
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-primary">{String(index + 1).padStart(2, "0")}</p>
+            <h3 class="mt-4 font-heading text-3xl font-semibold tracking-tight">{service.title}</h3>
+            <p class="mt-4 leading-relaxed text-muted-foreground">{service.text}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

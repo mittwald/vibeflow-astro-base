@@ -1,0 +1,22 @@
+---
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  address?: string;
+  text?: string;
+}
+
+const { eyebrow, headline, address, text } = Astro.props;
+---
+
+<section id="kontakt" data-section="contact" data-block-family="contact-map-card" class="scroll-mt-32 px-5 py-20">
+  <div class="mx-auto grid max-w-7xl gap-6 md:grid-cols-[1fr_1fr]">
+    <div class="aspect-[4/3] bg-surface-tint dot-grid" aria-hidden="true" />
+    <div class="border border-border bg-card p-8 md:p-10">
+      {eyebrow && <p class="text-sm font-semibold uppercase tracking-[0.24em] text-primary">{eyebrow}</p>}
+      <h2 class="mt-5 font-heading text-4xl font-semibold tracking-tight">{headline}</h2>
+      {address && <p class="mt-5 font-semibold">{address}</p>}
+      {text && <p class="mt-4 leading-relaxed text-muted-foreground">{text}</p>}
+    </div>
+  </div>
+</section>

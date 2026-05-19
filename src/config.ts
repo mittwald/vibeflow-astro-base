@@ -3,7 +3,26 @@ export type NavLink = {
   href: string;
 };
 
+export type BusinessType =
+  | "trade"
+  | "garden"
+  | "restaurant"
+  | "practice"
+  | "studio"
+  | "consulting"
+  | "hospitality"
+  | "club"
+  | "local-service"
+  | "portfolio";
+
 export type HeaderVariant =
+  | "local-minimal"
+  | "trade-service"
+  | "restaurant-reservation"
+  | "practice-appointment"
+  | "studio-booking"
+  | "heritage"
+  | "compact-logo-cta"
   | "plain"
   | "floating"
   | "split"
@@ -11,52 +30,44 @@ export type HeaderVariant =
   | "local"
   | "centered"
   | "boxed";
-export type FooterVariant =
-  | "minimal"
-  | "takeover"
-  | "sitemap"
-  | "contact-heavy";
-export type FontRecipe =
-  | "cleanSaas"
-  | "editorial"
-  | "boldStartup"
-  | "localCraft";
+
+export type FooterVariant = "minimal" | "takeover" | "sitemap" | "contact-heavy";
+export type FontRecipe = "cleanSaas" | "editorial" | "boldStartup" | "localCraft";
 
 export const config = {
-  name: "Hofmann Gartenbau",
-  tagline: "Gartenpflege und Außenanlagen in Musterstadt",
-  description:
-    "Garten- und Landschaftsbau für Privatgärten, Einfahrten und gepflegte Außenbereiche in Musterstadt und Umgebung.",
+  name: "Vibeflow Site",
+  tagline: "Individuell generierte Website",
+  description: "Eine Landingpage, die aus frei kombinierbaren Blocks erzeugt wird.",
   // Keep in sync with astro.config.mjs site.
   site: "https://example.com",
   design: {
-    header: "local" as HeaderVariant,
+    businessType: "local-service" as BusinessType,
+    header: "local-minimal" as HeaderVariant,
     footer: "contact-heavy" as FooterVariant,
+    showTopbar: false,
     fontRecipe: "localCraft" as FontRecipe,
-    visualMotif: "leaf-lines",
-    logoIcon: "lucide:leaf",
+    visualMotif: "custom-block-composition",
+    logoIcon: "lucide:sparkles",
   },
   business: {
-    phone: "01234 567890",
-    email: "info@example.com",
-    address: "Musterstraße 12, 12345 Musterstadt",
-    serviceArea: "Musterstadt + 30 km",
-    hours: "Mo-Fr 8:00-17:00 Uhr",
+    phone: "" as string,
+    email: "" as string,
+    address: "" as string,
+    serviceArea: "" as string,
+    hours: "" as string,
   },
   navigation: {
     header: [
       { label: "Leistungen", href: "/#leistungen" },
-      { label: "Ablauf", href: "/#ablauf" },
       { label: "Referenzen", href: "/#referenzen" },
       { label: "Kontakt", href: "/kontakt" },
-    ],
+    ] satisfies NavLink[],
     footer: [
-      { label: "Leistungen", href: "/#leistungen" },
       { label: "Kontakt", href: "/kontakt" },
       { label: "Impressum", href: "/impressum" },
       { label: "Datenschutz", href: "/datenschutz" },
-    ],
-    cta: { label: "Termin anfragen", href: "/kontakt" },
+    ] satisfies NavLink[],
+    cta: { label: "Kontakt aufnehmen", href: "/kontakt" } satisfies NavLink,
   },
   smtp: {
     host: "",

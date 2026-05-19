@@ -1,0 +1,57 @@
+---
+interface Link { label: string; href: string }
+interface Image { src: string; alt: string }
+interface Stat { value: string; label: string }
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  text?: string;
+  image?: Image;
+  primaryCta?: Link;
+  secondaryCta?: Link;
+  stats?: readonly Stat[];
+}
+
+const { eyebrow, headline, text, image, primaryCta, secondaryCta, stats = [] } = Astro.props;
+---
+
+<section data-section="hero" data-block-family="hero-local-problem-split" class="scroll-mt-32 border-b border-border bg-background">
+  <div class="mx-auto grid max-w-7xl gap-12 px-5 py-20 lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:py-24">
+    <div>
+      {eyebrow && <p class="text-sm font-semibold uppercase tracking-[0.24em] text-primary">{eyebrow}</p>}
+      <h1 class="mt-5 max-w-3xl font-heading text-5xl font-semibold leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">
+        {headline}
+      </h1>
+      {text && <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">{text}</p>}
+
+      {(primaryCta || secondaryCta) && (
+        <div class="mt-8 flex flex-wrap gap-3">
+          {primaryCta && <a href={primaryCta.href} class="inline-flex min-h-12 items-center rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground">{primaryCta.label}</a>}
+          {secondaryCta && <a href={secondaryCta.href} class="inline-flex min-h-12 items-center rounded-full border border-border bg-background px-5 text-sm font-semibold text-foreground">{secondaryCta.label}</a>}
+        </div>
+      )}
+    </div>
+
+    <div class="relative">
+      <div class="absolute -left-6 -top-6 hidden border border-border bg-surface-tint px-5 py-3 text-sm font-semibold text-primary md:block">
+        {eyebrow || headline.split(" ").slice(0, 3).join(" ")}
+      </div>
+      {image ? (
+        <img src={image.src} alt={image.alt} width="920" height="680" class="aspect-[4/3] w-full border border-border object-cover shadow-xl shadow-black/5" decoding="async" />
+      ) : (
+        <div class="aspect-[4/3] w-full border border-border bg-surface-tint dot-grid" aria-hidden="true" />
+      )}
+    </div>
+
+    {stats.length > 0 && (
+      <dl class="grid gap-px border-y border-border bg-border md:col-span-2 md:grid-cols-3">
+        {stats.map((stat) => (
+          <div class="bg-background px-6 py-5">
+            <dt class="text-sm uppercase tracking-[0.2em] text-muted-foreground">{stat.label}</dt>
+            <dd class="mt-2 font-heading text-3xl font-semibold tracking-tight">{stat.value}</dd>
+          </div>
+        ))}
+      </dl>
+    )}
+  </div>
+</section>

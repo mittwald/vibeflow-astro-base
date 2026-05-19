@@ -1,0 +1,33 @@
+---
+interface Props {
+  label: string;
+  href: string;
+  secondaryLabel?: string;
+  secondaryHref?: string;
+}
+
+const { label, href, secondaryLabel, secondaryHref } = Astro.props;
+---
+
+<div
+  data-section="chrome"
+  data-block-family="sticky-mobile-cta"
+  class="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 p-3 shadow-2xl backdrop-blur md:hidden"
+>
+  <div class:list={["grid gap-2", secondaryLabel && secondaryHref && "grid-cols-2"]}>
+    <a
+      href={href}
+      class="inline-flex min-h-12 items-center justify-center rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm"
+    >
+      {label}
+    </a>
+    {secondaryLabel && secondaryHref && (
+      <a
+        href={secondaryHref}
+        class="inline-flex min-h-12 items-center justify-center rounded-full border border-border bg-background px-4 text-sm font-semibold text-foreground"
+      >
+        {secondaryLabel}
+      </a>
+    )}
+  </div>
+</div>

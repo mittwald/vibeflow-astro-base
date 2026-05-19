@@ -1,0 +1,28 @@
+---
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  intro?: string;
+  checklist: readonly string[];
+}
+
+const { eyebrow, headline, intro, checklist } = Astro.props;
+---
+
+<section data-section="process" data-block-family="process-checklist" class="scroll-mt-32 px-5 py-20">
+  <div class="mx-auto grid max-w-6xl gap-10 md:grid-cols-[1fr_1fr]">
+    <div>
+      {eyebrow && <p class="text-sm font-semibold uppercase tracking-[0.24em] text-primary">{eyebrow}</p>}
+      <h2 class="mt-5 font-heading text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">{headline}</h2>
+      {intro && <p class="mt-5 leading-relaxed text-muted-foreground">{intro}</p>}
+    </div>
+    <ul class="space-y-3">
+      {checklist.map((item) => (
+        <li class="flex gap-3 border border-border bg-card p-5">
+          <span class="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" aria-hidden="true" />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

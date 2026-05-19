@@ -1,0 +1,25 @@
+---
+interface Link { label: string; href: string }
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  text?: string;
+  phoneLabel?: string;
+  phoneHref?: string;
+  secondary?: Link;
+}
+
+const { eyebrow, headline, text, phoneLabel, phoneHref, secondary } = Astro.props;
+---
+
+<section id="kontakt" data-section="contact" data-block-family="contact-phone-first" class="scroll-mt-32 bg-surface-strong px-5 py-20 text-surface-strong-foreground lg:py-28">
+  <div class="mx-auto max-w-5xl">
+    {eyebrow && <p class="text-sm font-semibold uppercase tracking-[0.24em] opacity-65">{eyebrow}</p>}
+    <h2 class="mt-5 max-w-3xl font-heading text-5xl font-semibold leading-tight tracking-tight sm:text-6xl">{headline}</h2>
+    {text && <p class="mt-6 max-w-2xl text-lg leading-relaxed opacity-75">{text}</p>}
+    <div class="mt-8 flex flex-wrap gap-3">
+      {phoneLabel && phoneHref && <a href={phoneHref} class="inline-flex min-h-12 items-center rounded-full bg-background px-5 text-sm font-semibold text-foreground">{phoneLabel}</a>}
+      {secondary && <a href={secondary.href} class="inline-flex min-h-12 items-center rounded-full border border-white/20 px-5 text-sm font-semibold text-surface-strong-foreground">{secondary.label}</a>}
+    </div>
+  </div>
+</section>

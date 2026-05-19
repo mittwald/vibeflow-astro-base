@@ -1,0 +1,32 @@
+---
+interface NavLink { label: string; href: string }
+interface Props {
+  name: string;
+  links?: readonly NavLink[];
+  reservation?: NavLink;
+}
+
+const { name, links = [], reservation } = Astro.props;
+---
+
+<header data-section="header" data-block-family="header-restaurant-reservation" class="border-b border-border bg-background">
+  <nav class="mx-auto grid max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-5 py-5" aria-label="Hauptnavigation">
+    <a href="/" class="font-heading text-xl font-semibold tracking-tight">{name}</a>
+
+    {links.length > 0 && (
+      <ul class="hidden items-center justify-center gap-7 md:flex">
+        {links.map((link) => (
+          <li><a href={link.href} class="text-sm text-muted-foreground transition-colors hover:text-foreground">{link.label}</a></li>
+        ))}
+      </ul>
+    )}
+
+    <div class="justify-self-end">
+      {reservation && (
+        <a href={reservation.href} class="hidden min-h-11 items-center rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground md:inline-flex">
+          {reservation.label}
+        </a>
+      )}
+    </div>
+  </nav>
+</header>

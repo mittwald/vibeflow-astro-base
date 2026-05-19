@@ -1,0 +1,34 @@
+---
+interface Link { label: string; href: string }
+interface Image { src: string; alt: string }
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  text?: string;
+  image?: Image;
+  cta?: Link;
+  tone?: "primary" | "strong" | "soft";
+}
+
+const { eyebrow, headline, text, image, cta, tone = "strong" } = Astro.props;
+const toneClasses = {
+  primary: "bg-primary text-primary-foreground",
+  strong: "bg-surface-strong text-surface-strong-foreground",
+  soft: "bg-surface-tint text-foreground",
+} as const;
+---
+
+<section data-section="hero" data-block-family="hero-poster-local" class:list={["full-bleed scroll-mt-32", toneClasses[tone]]}>
+  <div class="mx-auto grid min-h-[72vh] max-w-7xl gap-8 px-5 py-20 lg:grid-cols-[1fr_0.8fr] lg:items-end lg:py-28">
+    <div>
+      {eyebrow && <p class="text-sm font-semibold uppercase tracking-[0.28em] opacity-70">{eyebrow}</p>}
+      <h1 class="mt-6 max-w-5xl font-heading text-6xl font-semibold leading-[0.88] tracking-tight sm:text-7xl lg:text-8xl">{headline}</h1>
+    </div>
+
+    <div class="space-y-6">
+      {image && <img src={image.src} alt={image.alt} width="720" height="840" class="aspect-[5/6] w-full object-cover" decoding="async" />}
+      {text && <p class="max-w-md text-lg leading-relaxed opacity-80">{text}</p>}
+      {cta && <a href={cta.href} class="inline-flex min-h-12 items-center rounded-full bg-background px-5 text-sm font-semibold text-foreground">{cta.label}</a>}
+    </div>
+  </div>
+</section>

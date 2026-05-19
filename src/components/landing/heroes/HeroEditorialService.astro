@@ -1,0 +1,27 @@
+---
+interface Link { label: string; href: string }
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  text?: string;
+  primaryCta?: Link;
+  note?: string;
+}
+
+const { eyebrow, headline, text, primaryCta, note } = Astro.props;
+---
+
+<section data-section="hero" data-block-family="hero-editorial-service" class="scroll-mt-32 bg-background px-5 py-24 lg:py-32">
+  <div class="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.75fr_1.25fr]">
+    <aside class="border-l border-border pl-5 text-sm text-muted-foreground">
+      {eyebrow && <p class="font-semibold uppercase tracking-[0.24em] text-primary">{eyebrow}</p>}
+      {note && <p class="mt-6 max-w-xs leading-relaxed">{note}</p>}
+    </aside>
+
+    <div>
+      <h1 class="font-heading text-5xl font-semibold leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">{headline}</h1>
+      {text && <p class="mt-8 max-w-2xl text-xl leading-relaxed text-muted-foreground">{text}</p>}
+      {primaryCta && <a href={primaryCta.href} class="mt-9 inline-flex min-h-12 items-center rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground">{primaryCta.label}</a>}
+    </div>
+  </div>
+</section>

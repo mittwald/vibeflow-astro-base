@@ -1,0 +1,31 @@
+---
+interface Service { title: string; text?: string }
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  text?: string;
+  services: readonly Service[];
+}
+
+const { eyebrow, headline, text, services } = Astro.props;
+---
+
+<section id="leistungen" data-section="services" data-block-family="services-plain-list" class="scroll-mt-32 bg-background px-5 py-20">
+  <div class="mx-auto max-w-5xl">
+    {eyebrow && <p class="text-sm font-semibold uppercase tracking-[0.24em] text-primary">{eyebrow}</p>}
+    <div class="mt-5 grid gap-10 md:grid-cols-[0.8fr_1.2fr]">
+      <div>
+        <h2 class="font-heading text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">{headline}</h2>
+        {text && <p class="mt-5 leading-relaxed text-muted-foreground">{text}</p>}
+      </div>
+      <div class="divide-y divide-border border-y border-border">
+        {services.map((service) => (
+          <article class="py-6">
+            <h3 class="font-heading text-2xl font-semibold tracking-tight">{service.title}</h3>
+            {service.text && <p class="mt-2 leading-relaxed text-muted-foreground">{service.text}</p>}
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

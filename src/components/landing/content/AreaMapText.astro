@@ -1,0 +1,26 @@
+---
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  text?: string;
+  places?: readonly string[];
+}
+
+const { eyebrow, headline, text, places = [] } = Astro.props;
+---
+
+<section data-section="content" data-block-family="area-map-text" class="scroll-mt-32 px-5 py-20">
+  <div class="mx-auto grid max-w-7xl gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-center">
+    <div class="aspect-[16/10] border border-border bg-surface-tint dot-grid" aria-hidden="true" />
+    <div>
+      {eyebrow && <p class="text-sm font-semibold uppercase tracking-[0.24em] text-primary">{eyebrow}</p>}
+      <h2 class="mt-5 font-heading text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">{headline}</h2>
+      {text && <p class="mt-5 leading-relaxed text-muted-foreground">{text}</p>}
+      {places.length > 0 && (
+        <ul class="mt-6 flex flex-wrap gap-2">
+          {places.map((place) => <li class="rounded-full border border-border px-3 py-1 text-sm text-muted-foreground">{place}</li>)}
+        </ul>
+      )}
+    </div>
+  </div>
+</section>

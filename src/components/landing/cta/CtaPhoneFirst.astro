@@ -1,0 +1,22 @@
+---
+interface Props {
+  headline: string;
+  text?: string;
+  phone: string;
+}
+
+const { headline, text, phone } = Astro.props;
+const phoneHref = `tel:${phone.replace(/[^\d+]/g, "")}`;
+---
+
+<section data-section="cta" data-block-family="cta-phone-first" class="scroll-mt-32 px-5 py-16">
+  <div class="mx-auto flex max-w-6xl flex-col justify-between gap-6 border-y border-border py-8 md:flex-row md:items-center">
+    <div>
+      <h2 class="font-heading text-3xl font-semibold tracking-tight">{headline}</h2>
+      {text && <p class="mt-2 text-muted-foreground">{text}</p>}
+    </div>
+    <a href={phoneHref} class="inline-flex min-h-12 items-center justify-center rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground">
+      {phone}
+    </a>
+  </div>
+</section>

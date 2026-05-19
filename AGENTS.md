@@ -1,44 +1,74 @@
-# Agent Instructions
+# AGENTS.md
 
-## Project Overview
+This repository is a landing-page block library for an AI website builder. It is not a page-template repository.
 
-This is an Astro 6 site base for AI-generated marketing websites. It uses React, Tailwind CSS 4, shadcn-style primitives, Astro Font API, semantic theme tokens and a design audit step.
+## Primary default audience
 
-The goal is not to generate another generic landing page. The goal is to generate a page with a clear visual identity, deliberate section rhythm and a recognizable motif.
+Assume a normal local or regional business unless the user explicitly asks for a tech/startup/SaaS site.
 
-## Tech Stack
+Common defaults:
 
-- Framework: Astro 6 with `@astrojs/node` adapter.
-- UI: React 19 for interactive islands.
-- Styling: Tailwind CSS 4 via Vite plugin, CSS theme variables, `tw-animate-css`.
-- Fonts: Google Fonts via Astro Font API in `astro.config.mjs`, applied with `<Font />` in `RootLayout.astro`.
-- Icons: `astro-icon` in `.astro` files, `lucide-react` in React components.
-- SEO: Meta tags in `RootLayout.astro`, `@astrojs/sitemap`, dynamic `robots.txt`.
-- Forms: React contact form with valibot validation, honeypot and time-based spam protection.
+- trade businesses and craftsmen
+- garden and landscaping businesses
+- restaurants and cafes
+- medical, therapy or consulting practices
+- studios, salons, gyms and local services
+- clubs, associations and small regional organizations
 
-## Core Files
+Do not default to dashboard sections, SaaS metrics, logo clouds, pricing tables or startup language unless the brief clearly points there.
 
-- `src/design/identity.ts`: persistent visual direction for the project.
-- `src/design/font-recipes.ts`: supported font pairings and their mood.
-- `src/design/allowed-ui.ts`: shadcn-style component allowlist for marketing sites.
-- `src/design/section-blueprints.ts`: available page rhythms. The first rhythm is local-service oriented.
-- `src/styles/global.css`: Tailwind v4 theme variables and brand tokens.
-- `scripts/design-audit.mjs`: checks for common AI landing-page sameness.
+## Block library, not templates
 
+Never copy an existing page, screenshot or demo skeleton and only swap the content.
 
-## Default audience bias
+Every page must be newly composed from blocks:
 
-Assume many generated sites are for normal local businesses first: trades, practices, restaurants, studios, agencies, clubs, real estate offices, local service providers and small shops. Do not default to a Tech SaaS, dashboard, startup, AI tool or product-led layout unless the brief points there.
+1. Determine business type.
+2. Determine design DNA in `src/design/identity.ts`.
+3. Pick blocks from `src/landing/registry.ts`.
+4. Compose a new section order.
+5. Adapt spacing, surface rhythm, copy and CTA style to the business.
+6. Run the design audit.
 
-For local-business sites, prioritize:
+Forbidden as a default:
 
-- clear service area, phone number, opening hours and contact CTA,
-- proof of reliability instead of generic star ratings,
-- real work imagery or tactile visual motifs,
-- readable sections over dashboard-like UI,
-- header variants with contact information, not only SaaS navigation.
+- always using Hero -> 3 Cards -> Services Bento -> Stats -> Testimonial -> Process -> CTA
+- always using a topbar above the header
+- always placing three equal cards directly after the hero
+- copying the same section order as a previous generated page
+- rewriting example text instead of creating business-specific content
 
-The first example homepage in this repository intentionally uses a local-service archetype. Treat it as the default audience anchor, not as a fixed template.
+A generated page must make at least three structural decisions that differ from the previous/default composition:
+
+- different header strategy
+- different hero strategy
+- different middle-section order
+- different service layout
+- different proof/trust presentation
+- different contact/CTA strategy
+
+## Topbar rule
+
+A topbar above the header is opt-in, not default.
+
+Use `LocalInfoBar` only if at least two of these are true:
+
+- opening hours are decision-relevant
+- phone is the primary conversion path
+- location or service area matters immediately
+- the business has booking, reservation, appointment or emergency logic
+- the business type is restaurant, hospitality, practice, urgent service or phone-first local service
+
+Do not use a topbar just because a business is local.
+
+If a topbar is not clearly useful, place contact information in one of these instead:
+
+- header CTA
+- sticky mobile CTA
+- contact block
+- footer
+
+`config.design.showTopbar` must default to `false`.
 
 ## Mandatory: Design DNA before code
 
@@ -49,9 +79,30 @@ Before writing layout code, define the visual direction in `src/design/identity.
 3. Typography role: `typographic-first`, `image-first`, `product-first`, or `proof-first`.
 4. Container rhythm: for example `narrow -> wide -> full-bleed -> asymmetric -> narrow`.
 5. Shape language: `sharp`, `subtle-rounded`, `soft`, `pill`, or `geometric`.
-6. Image or motif strategy: real imagery, product screens, abstract shapes, pattern system, icons, or pure typography.
+6. Image or motif strategy: real imagery, project images, abstract shapes, pattern system, icons, or pure typography.
 
-All layout, color, type and section decisions must fit that identity. Do not leave `identity.ts` generic after generating a customer site.
+All layout, color, type and section decisions must fit that identity.
+
+## Composition rules
+
+Use `src/landing/composition-rules.ts` before choosing blocks.
+
+Good local-business structures include:
+
+- Hero -> Services -> Contact
+- Hero -> Location/Hours -> Offer -> Gallery -> Reservation
+- Hero -> Problem cases -> Before/After -> Process -> Callback
+- Hero -> Trust -> Services -> FAQ -> Appointment
+- Hero -> Story -> References -> Contact
+
+Not every local site needs all of these:
+
+- topbar
+- Bento
+- Stats
+- Testimonial
+- Process
+- CTA takeover
 
 ## Forbidden default signatures
 
@@ -66,56 +117,68 @@ Avoid these combinations unless the user explicitly asks for them:
 - Generic trust line with five stars and `100+ Bewertungen`.
 - All sections using the same vertical rhythm, such as only `py-16` or only `py-20`.
 
-## Variation Budget
+## Variation budget
 
-Every homepage must contain at least 4 of these 8 traits:
+Every generated homepage must contain at least 4 of these 8 traits:
 
-- An asymmetric section.
-- A full-bleed color surface.
-- A narrow text section (`max-w-2xl`, `max-w-3xl`, or smaller) that is not the hero.
-- A deliberately wide or edge-to-edge section.
-- A non-card-based feature presentation.
-- A large typographic section without an image.
-- A recurring visual motif.
-- A section order that does not start with a centered hero.
+- an asymmetric section
+- a full-bleed color surface
+- a narrow text section that is not the hero
+- a deliberately wide or edge-to-edge section
+- a non-card-based feature presentation
+- a large typographic section without an image
+- a recurring visual motif
+- a section order that does not start with a centered hero
 
 Record the selected traits in `src/design/identity.ts`.
 
-## Layout principles
+## Header selection by business type
 
-- Use section composition, not page templates.
-- Prefer strong section rhythm over a stack of similar containers.
-- Use `full-bleed` when a surface should break out of the page frame.
-- Mix narrow, wide, full-bleed and asymmetric containers intentionally.
-- Do not solve every layout with cards.
-- Avoid copy-paste repetition of the same section scaffold.
-- Do not use a Bento grid as decoration. Use a Bento/Mosaic only when it helps explain different content sizes or priorities.
-- For non-tech businesses, prefer a service mosaic, proof strip or process section over product screenshots and metric dashboards.
+Choose the header by business type, not by generic aesthetics.
 
-## Design tokens
+- Trade/garden/local service: simple local header, optional phone CTA, topbar only if phone/hours/area are critical.
+- Restaurant/cafe: reservation, opening hours, address; topbar often useful.
+- Practice/therapy: calm header, appointment CTA, phone secondary.
+- Studio/salon/gym: booking CTA, prices/services, optional social link.
+- Consulting/law/finance: sober header, contact/initial consultation, less CTA pressure.
+- Club/association: events, membership, news.
+- Hotel/pension: booking, availability, location, contact.
 
-Use semantic tokens from `global.css`:
+Avoid using the same Logo-left / Nav-center / CTA-right layout as the universal default.
 
-- Core shadcn-style tokens: `background`, `foreground`, `primary`, `muted`, `border`, `card`, etc.
-- Brand extension tokens: `primary-soft`, `accent-2`, `surface-tint`, `surface-strong`, `grid-line`, `spotlight`.
+## Mobile navigation
+
+Mobile navigation must work independently from the desktop header.
 
 Rules:
 
-- Use at least two tokens beyond `primary` on every homepage.
-- `primary` must not be used only for buttons.
-- Prefer token changes over one-off arbitrary colors.
-- Keep contrast readable.
+- render overlay/root-level UI with a portal or equivalent root-level strategy
+- do not rely on a header stacking context
+- use large touch targets (`min-h-12` or larger)
+- include phone, primary CTA, service area/address and hours when relevant
+- prefer fullscreen or bottom-sheet behavior for local businesses
+- keep `client:media="(max-width: 767px)"` for React mobile navigation
 
-## Fonts
+## Component policy
 
-The project includes four font recipes:
+The `src/components/landing/*` files are blocks, not page templates.
 
-- `cleanSaas`: Inter for body and headings.
-- `editorial`: Inter body, Fraunces headings.
-- `boldStartup`: Inter body, Space Grotesk headings.
-- `localCraft`: Inter body, Bricolage Grotesque headings.
+Blocks must be props-driven. Do not hardcode example business copy inside reusable blocks.
 
-Set the active recipe in `config.design.fontRecipe`. Do not default to Inter-only unless the brand direction truly calls for it.
+Allowed defaults are structural only, for example empty arrays or optional labels. Avoid complete sample sections that an agent can copy as a finished page.
+
+## Tailwind class policy
+
+Do not build dynamic Tailwind class names like `bg-${color}-500`.
+
+Use complete class strings in maps:
+
+```ts
+const toneClasses = {
+  primary: "bg-primary text-primary-foreground",
+  soft: "bg-surface-tint text-foreground",
+} as const;
+```
 
 ## shadcn-style component policy
 
@@ -166,7 +229,7 @@ Use variants to make the global frame match the visual identity. For local busin
 - `/kontakt` uses `ContactForm.tsx` with `client:load`.
 - The API route is `src/pages/api/contact.ts` and has `prerender = false`.
 - Spam protection: honeypot field `_gotcha` plus time-based check.
-- Minimum submit time is 5 seconds and must stay consistent between docs and code.
+- Keep submit timing consistent between docs and code.
 - Do not silently submit if SMTP is not configured.
 
 ## Client hydration
@@ -185,26 +248,29 @@ Run after generating or heavily changing a homepage:
 pnpm design:audit
 ```
 
-If two or more checks fail, revise the design before finishing. Treat audit failures as design feedback, not as mere lint errors.
+If two or more checks fail, revise the design before finishing.
 
 The audit checks for:
 
-- centered default hero signatures,
-- excessive repeated max-width containers,
-- too many centered headings,
-- too many card-like panels,
-- missing full-bleed surface,
-- missing secondary accent tokens,
-- missing visual motif,
-- repeated vertical spacing.
+- old example skeleton reuse
+- automatic topbar usage
+- centered default hero signatures
+- generic three-card proof strips
+- repeated max-width containers
+- excessive centered copy
+- excessive card-like panels
+- missing full-bleed or strong surfaces
+- missing extended brand tokens
+- repeated vertical rhythm
 
 ## Quality bar
 
-A completed homepage should be able to answer these questions clearly:
+A completed homepage should answer these questions clearly:
 
-1. What is the visual archetype?
-2. What makes the page visually different from a default SaaS landing page?
-3. Where is the recurring motif?
-4. Which sections break the container rhythm?
-5. Which tokens beyond `primary` carry the brand?
-6. Did the design audit pass?
+1. What is the business type?
+2. What is the visual archetype?
+3. Which blocks were selected from the registry?
+4. Why is the topbar present or absent?
+5. What makes this page structurally different from the last generated page?
+6. Which tokens beyond `primary` carry the brand?
+7. Did the design audit pass?

@@ -1,0 +1,35 @@
+---
+interface Image { src: string; alt: string; label?: string }
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  text?: string;
+  before?: Image;
+  after?: Image;
+}
+
+const { eyebrow, headline, text, before, after } = Astro.props;
+---
+
+<section data-section="proof" data-block-family="proof-before-after" class="scroll-mt-32 bg-background px-5 py-20 lg:py-28">
+  <div class="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+    <div class="lg:sticky lg:top-28">
+      {eyebrow && <p class="text-sm font-semibold uppercase tracking-[0.24em] text-primary">{eyebrow}</p>}
+      <h2 class="mt-5 font-heading text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">{headline}</h2>
+      {text && <p class="mt-5 max-w-xl leading-relaxed text-muted-foreground">{text}</p>}
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      {[before, after].map((image) => (
+        <figure class="border border-border bg-card p-3">
+          {image ? (
+            <img src={image.src} alt={image.alt} width="640" height="800" loading="lazy" decoding="async" class="aspect-[4/5] w-full object-cover" />
+          ) : (
+            <div class="aspect-[4/5] w-full bg-surface-tint dot-grid" aria-hidden="true" />
+          )}
+          {image?.label && <figcaption class="px-2 py-3 text-sm font-semibold text-muted-foreground">{image.label}</figcaption>}
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>

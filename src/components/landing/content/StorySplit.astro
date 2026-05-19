@@ -1,0 +1,26 @@
+---
+interface Image { src: string; alt: string }
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  text: string;
+  image?: Image;
+}
+
+const { eyebrow, headline, text, image } = Astro.props;
+---
+
+<section data-section="content" data-block-family="story-split" class="scroll-mt-32 px-5 py-20 lg:py-28">
+  <div class="mx-auto grid max-w-7xl gap-10 md:grid-cols-[0.9fr_1.1fr] md:items-center">
+    <div>
+      {eyebrow && <p class="text-sm font-semibold uppercase tracking-[0.24em] text-primary">{eyebrow}</p>}
+      <h2 class="mt-5 font-heading text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">{headline}</h2>
+      <p class="mt-6 whitespace-pre-line leading-relaxed text-muted-foreground">{text}</p>
+    </div>
+    {image ? (
+      <img src={image.src} alt={image.alt} width="820" height="680" loading="lazy" decoding="async" class="aspect-[6/5] w-full object-cover" />
+    ) : (
+      <div class="aspect-[6/5] w-full bg-surface-tint dot-grid" aria-hidden="true" />
+    )}
+  </div>
+</section>

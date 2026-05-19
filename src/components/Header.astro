@@ -2,157 +2,133 @@
 import { config } from "@/config";
 import { MobileNav } from "@/components/MobileNav";
 import SiteBrand from "@/components/SiteBrand.astro";
+import LocalInfoBar from "@/components/landing/chrome/LocalInfoBar.astro";
 
 const { name, navigation, design, business } = config;
 const links = navigation.header;
 const cta = navigation.cta;
 const currentPath = Astro.url.pathname;
 const variant = design.header;
+const showTopbar = Boolean(design.showTopbar);
 const isActive = (href: string) => currentPath === href || currentPath === `${href}/`;
+const phoneHref = business.phone ? `tel:${business.phone.replace(/[^\d+]/g, "")}` : undefined;
 
-const wrapperClasses = {
-  plain: "border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur",
+const normalizedVariant =
+  variant === "local" ? "local-minimal" :
+  variant === "boxed" ? "trade-service" :
+  variant === "split" ? "compact-logo-cta" :
+  variant;
+
+const shellClasses = {
+  "local-minimal": "sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur",
+  "trade-service": "sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur",
+  "restaurant-reservation": "sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur",
+  "practice-appointment": "sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur",
+  "studio-booking": "sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur",
+  heritage: "sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur",
+  "compact-logo-cta": "sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur",
+  plain: "sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur",
+  centered: "sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur",
   floating: "pointer-events-none fixed inset-x-0 top-4 z-40 px-3",
-  split: "border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur",
   transparent: "absolute inset-x-0 top-0 z-40 text-white",
-  boxed: "sticky top-0 z-40 px-3 pt-3",
-  local: "border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur",
-  centered: "border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur",
-};
+} as const;
 
 const navClasses = {
+  "local-minimal": "mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:py-4",
+  "trade-service": "mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:py-4",
+  "restaurant-reservation": "mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:py-4",
+  "practice-appointment": "mx-auto grid max-w-6xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 py-3 sm:py-4",
+  "studio-booking": "mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:py-5",
+  heritage: "mx-auto grid max-w-6xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 py-4 sm:py-5",
+  "compact-logo-cta": "mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:py-4",
   plain: "mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:py-4",
-  floating:
-    "border-border bg-background/88 pointer-events-auto mx-auto flex max-w-6xl items-center justify-between rounded-full border px-4 py-3 shadow-lg shadow-black/5 backdrop-blur-xl sm:px-5",
-  split: "mx-auto grid max-w-6xl grid-cols-3 items-center px-4 py-3 sm:py-4",
-  transparent: "mx-auto flex max-w-6xl items-center justify-between px-4 py-5",
-  boxed:
-    "border-border bg-background/92 mx-auto flex max-w-6xl items-center justify-between rounded-3xl border px-4 py-3 shadow-xl shadow-black/5 backdrop-blur-xl sm:px-5",
-  local: "mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:py-4",
   centered: "mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:py-4",
-};
+  floating: "pointer-events-auto mx-auto flex max-w-6xl items-center justify-between rounded-full border border-border bg-background/88 px-4 py-3 shadow-lg shadow-black/5 backdrop-blur-xl sm:px-5",
+  transparent: "mx-auto flex max-w-6xl items-center justify-between px-4 py-5",
+} as const;
 
+const navPositionClasses = {
+  "local-minimal": "hidden items-center gap-6 md:flex",
+  "trade-service": "hidden items-center gap-6 md:flex",
+  "restaurant-reservation": "hidden items-center gap-6 md:flex",
+  "practice-appointment": "hidden items-center justify-center gap-7 md:flex",
+  "studio-booking": "hidden items-center gap-7 md:flex",
+  heritage: "hidden items-center justify-center gap-8 md:flex",
+  "compact-logo-cta": "hidden items-center gap-6 md:flex",
+  plain: "hidden items-center gap-6 md:flex",
+  centered: "hidden items-center gap-7 md:flex",
+  floating: "hidden items-center gap-6 md:flex",
+  transparent: "hidden items-center gap-6 md:flex",
+} as const;
+
+const headerKey = normalizedVariant in shellClasses ? (normalizedVariant as keyof typeof shellClasses) : "local-minimal";
+const ctaLabel =
+  headerKey === "restaurant-reservation" ? "Reservieren" :
+  headerKey === "practice-appointment" ? "Termin vereinbaren" :
+  headerKey === "studio-booking" ? "Buchen" :
+  cta.label;
 ---
 
-{variant === "local" ? (
-  <header class="border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur">
-    <div class="bg-surface-strong text-surface-strong-foreground hidden sm:block">
-      <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-2 text-xs">
-        <p>{business.serviceArea}</p>
-        <div class="flex items-center gap-5 text-surface-strong-foreground/80">
-          <a href={`tel:${business.phone.replaceAll(" ", "")}`} class="hover:text-white transition-colors">{business.phone}</a>
-          <span>{business.hours}</span>
-        </div>
-      </div>
-    </div>
-    <nav aria-label="Hauptnavigation" class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:py-4">
-      <SiteBrand />
-
-      {links.length > 0 && (
-        <ul class="hidden items-center gap-6 md:flex">
-          {links.map((link) => (
-            <li>
-              <a
-                href={link.href}
-                class:list={[
-                  "text-sm transition-colors",
-                  isActive(link.href) ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground",
-                ]}
-                aria-current={isActive(link.href) ? "page" : undefined}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <div class="flex items-center gap-2">
-        <a
-          href={cta.href}
-          class="bg-primary text-primary-foreground hover:bg-primary/90 hidden rounded-full px-4 py-2 text-sm font-semibold transition-colors shadow-sm md:inline-flex"
-        >
-          {cta.label}
-        </a>
-        <MobileNav links={links} name={name} client:media="(max-width: 767px)" />
-      </div>
-    </nav>
-  </header>
-) : variant === "centered" ? (
-  <header class="border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur">
-    <div class="mx-auto max-w-6xl px-4 py-4">
-      <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-        <div class="md:hidden">
-          <MobileNav links={links} name={name} client:media="(max-width: 767px)" />
-        </div>
-        <div class="col-start-2"><SiteBrand /></div>
-        <div class="hidden justify-self-end md:block">
-          <a href={cta.href} class="text-primary text-sm font-semibold hover:underline">{cta.label}</a>
-        </div>
-      </div>
-      {links.length > 0 && (
-        <ul class="mt-4 hidden items-center justify-center gap-7 md:flex">
-          {links.map((link) => (
-            <li>
-              <a
-                href={link.href}
-                class:list={[
-                  "text-sm transition-colors",
-                  isActive(link.href) ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground",
-                ]}
-                aria-current={isActive(link.href) ? "page" : undefined}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  </header>
-) : (
-  <header class={wrapperClasses[variant]}>
-    <nav aria-label="Hauptnavigation" class={navClasses[variant]}>
-      <SiteBrand />
-
-      {links.length > 0 && (
-        <ul class:list={[
-          "hidden items-center gap-6 md:flex",
-          variant === "split" && "justify-self-center",
-          variant !== "split" && "ml-auto mr-6",
-        ]}>
-          {links.map((link) => (
-            <li>
-              <a
-                href={link.href}
-                class:list={[
-                  "text-sm transition-colors",
-                  isActive(link.href) ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground",
-                  variant === "transparent" && !isActive(link.href) && "text-white/75 hover:text-white",
-                ]}
-                aria-current={isActive(link.href) ? "page" : undefined}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <div class:list={["flex items-center gap-2", variant === "split" && "justify-self-end"]}>
-        <a
-          href={cta.href}
-          class:list={[
-            "hidden rounded-full px-4 py-2 text-sm font-semibold transition-colors shadow-sm md:inline-flex",
-            variant === "transparent"
-              ? "bg-white text-foreground hover:bg-white/90"
-              : "bg-primary text-primary-foreground hover:bg-primary/90",
-          ]}
-        >
-          {cta.label}
-        </a>
-        <MobileNav links={links} name={name} client:media="(max-width: 767px)" />
-      </div>
-    </nav>
-  </header>
+{showTopbar && (
+  <LocalInfoBar location={business.serviceArea || business.address} phone={business.phone} hours={business.hours} />
 )}
+
+<header class={shellClasses[headerKey]}>
+  <nav aria-label="Hauptnavigation" class={navClasses[headerKey]}>
+    <div class:list={[headerKey === "heritage" && "justify-self-start"]}>
+      <SiteBrand />
+    </div>
+
+    {links.length > 0 && (
+      <ul class:list={[navPositionClasses[headerKey], headerKey !== "practice-appointment" && headerKey !== "heritage" && "ml-auto mr-6"]}>
+        {links.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class:list={[
+                "text-sm transition-colors",
+                isActive(link.href) ? "font-medium text-foreground" : "text-muted-foreground hover:text-foreground",
+                headerKey === "transparent" && !isActive(link.href) && "text-white/75 hover:text-white",
+                headerKey === "heritage" && "uppercase tracking-[0.16em]",
+              ]}
+              aria-current={isActive(link.href) ? "page" : undefined}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+
+    <div class:list={["flex items-center gap-2", (headerKey === "practice-appointment" || headerKey === "heritage") && "justify-self-end"]}>
+      {phoneHref && headerKey === "trade-service" && (
+        <a href={phoneHref} class="hidden text-sm font-semibold text-foreground transition-colors hover:text-primary lg:inline-flex">
+          {business.phone}
+        </a>
+      )}
+
+      <a
+        href={cta.href}
+        class:list={[
+          "hidden min-h-11 items-center rounded-full px-4 text-sm font-semibold transition-colors shadow-sm md:inline-flex",
+          headerKey === "transparent"
+            ? "bg-white text-foreground hover:bg-white/90"
+            : headerKey === "heritage"
+              ? "border border-border bg-background text-foreground hover:bg-muted"
+              : "bg-primary text-primary-foreground hover:bg-primary/90",
+        ]}
+      >
+        {ctaLabel}
+      </a>
+
+      <MobileNav
+        links={links}
+        name={name}
+        cta={{ label: ctaLabel, href: cta.href }}
+        business={business}
+        variant={variant}
+        client:media="(max-width: 767px)"
+      />
+    </div>
+  </nav>
+</header>

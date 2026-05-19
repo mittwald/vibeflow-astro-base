@@ -1,0 +1,46 @@
+---
+import { ClockIcon, MapPinIcon, PhoneIcon } from "lucide-react";
+
+interface Props {
+  location?: string;
+  phone?: string;
+  hours?: string;
+}
+
+const { location, phone, hours } = Astro.props;
+const hasContent = Boolean(location || phone || hours);
+const phoneHref = phone ? `tel:${phone.replace(/[^\d+]/g, "")}` : undefined;
+---
+
+{hasContent && (
+  <aside
+    data-section="chrome"
+    data-block-family="local-info-bar"
+    class="border-b border-primary/15 bg-primary text-sm text-primary-foreground"
+  >
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-6 py-2">
+      {location && (
+        <div class="inline-flex items-center gap-2">
+          <MapPinIcon className="h-4 w-4" aria-hidden="true" />
+          <span>{location}</span>
+        </div>
+      )}
+
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+        {phone && phoneHref && (
+          <a class="inline-flex items-center gap-2 transition-opacity hover:opacity-80" href={phoneHref}>
+            <PhoneIcon className="h-4 w-4" aria-hidden="true" />
+            <span>{phone}</span>
+          </a>
+        )}
+
+        {hours && (
+          <div class="inline-flex items-center gap-2">
+            <ClockIcon className="h-4 w-4" aria-hidden="true" />
+            <span>{hours}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  </aside>
+)}

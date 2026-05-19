@@ -1,0 +1,26 @@
+---
+interface Item { label: string; value: string; text?: string }
+interface Props {
+  items: readonly Item[];
+  tone?: "plain" | "soft" | "primary";
+}
+
+const { items, tone = "soft" } = Astro.props;
+const toneClasses = {
+  plain: "bg-background text-foreground",
+  soft: "bg-surface-tint text-foreground",
+  primary: "bg-primary text-primary-foreground",
+} as const;
+---
+
+<section data-section="proof" data-block-family="proof-local-strip" class:list={["scroll-mt-32 px-5 py-12", toneClasses[tone]]}>
+  <dl class="mx-auto grid max-w-6xl gap-px bg-border sm:grid-cols-2 lg:grid-cols-4">
+    {items.map((item) => (
+      <div class="bg-background p-6 text-foreground">
+        <dt class="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">{item.label}</dt>
+        <dd class="mt-3 font-heading text-4xl font-semibold tracking-tight">{item.value}</dd>
+        {item.text && <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{item.text}</p>}
+      </div>
+    ))}
+  </dl>
+</section>

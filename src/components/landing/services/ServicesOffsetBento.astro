@@ -1,0 +1,49 @@
+---
+interface Service {
+  title: string;
+  text: string;
+  eyebrow?: string;
+  tone?: "primary" | "soft" | "strong" | "plain";
+  large?: boolean;
+}
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  text?: string;
+  services: readonly Service[];
+}
+
+const { eyebrow, headline, text, services } = Astro.props;
+const toneClasses = {
+  primary: "bg-primary text-primary-foreground",
+  soft: "bg-primary-soft text-primary-soft-foreground",
+  strong: "bg-surface-strong text-surface-strong-foreground",
+  plain: "bg-card text-card-foreground border border-border",
+} as const;
+---
+
+<section id="leistungen" data-section="services" data-block-family="services-offset-bento" class="scroll-mt-32 px-5 py-20 lg:py-28">
+  <div class="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+    <div class="lg:sticky lg:top-28 lg:self-start">
+      {eyebrow && <p class="text-sm font-semibold uppercase tracking-[0.24em] text-primary">{eyebrow}</p>}
+      <h2 class="mt-5 font-heading text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">{headline}</h2>
+      {text && <p class="mt-5 max-w-xl leading-relaxed text-muted-foreground">{text}</p>}
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      {services.map((service, index) => (
+        <article
+          class:list={[
+            "p-7 shadow-sm",
+            toneClasses[service.tone || (index === 0 ? "strong" : "plain")],
+            service.large && "md:col-span-2",
+          ]}
+        >
+          {service.eyebrow && <p class="text-xs font-semibold uppercase tracking-[0.2em] opacity-70">{service.eyebrow}</p>}
+          <h3 class="mt-8 font-heading text-3xl font-semibold tracking-tight">{service.title}</h3>
+          <p class="mt-4 leading-relaxed opacity-75">{service.text}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

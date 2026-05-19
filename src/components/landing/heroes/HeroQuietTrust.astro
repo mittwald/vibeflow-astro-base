@@ -1,0 +1,25 @@
+---
+interface Link { label: string; href: string }
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  text?: string;
+  trustNote?: string;
+  cta?: Link;
+}
+
+const { eyebrow, headline, text, trustNote, cta } = Astro.props;
+---
+
+<section data-section="hero" data-block-family="hero-quiet-trust" class="scroll-mt-32 bg-background px-5 py-20 lg:py-28">
+  <div class="mx-auto max-w-4xl">
+    {eyebrow && <p class="text-sm font-semibold uppercase tracking-[0.24em] text-primary">{eyebrow}</p>}
+    <h1 class="mt-5 font-heading text-5xl font-semibold leading-tight tracking-tight sm:text-6xl">{headline}</h1>
+    {text && <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">{text}</p>}
+
+    <div class="mt-8 flex flex-wrap items-center gap-4">
+      {cta && <a href={cta.href} class="inline-flex min-h-12 items-center rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground">{cta.label}</a>}
+      {trustNote && <p class="max-w-sm text-sm leading-relaxed text-muted-foreground">{trustNote}</p>}
+    </div>
+  </div>
+</section>

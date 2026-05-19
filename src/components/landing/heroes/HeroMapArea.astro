@@ -1,0 +1,34 @@
+---
+interface Link { label: string; href: string }
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  text?: string;
+  areaLabel?: string;
+  places?: readonly string[];
+  cta?: Link;
+}
+
+const { eyebrow, headline, text, areaLabel, places = [], cta } = Astro.props;
+---
+
+<section data-section="hero" data-block-family="hero-map-area" class="scroll-mt-32 bg-surface-tint px-5 py-20 lg:py-28">
+  <div class="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+    <div>
+      {eyebrow && <p class="text-sm font-semibold uppercase tracking-[0.24em] text-primary">{eyebrow}</p>}
+      <h1 class="mt-5 font-heading text-5xl font-semibold leading-tight tracking-tight sm:text-6xl">{headline}</h1>
+      {text && <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">{text}</p>}
+      {cta && <a href={cta.href} class="mt-8 inline-flex min-h-12 items-center rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground">{cta.label}</a>}
+    </div>
+
+    <div class="border border-border bg-background p-6 shadow-xl shadow-black/5">
+      {areaLabel && <p class="text-sm font-semibold uppercase tracking-[0.22em] text-primary">{areaLabel}</p>}
+      <div class="mt-6 aspect-[4/3] border border-border bg-surface-tint dot-grid" aria-hidden="true" />
+      {places.length > 0 && (
+        <ul class="mt-5 flex flex-wrap gap-2">
+          {places.map((place) => <li class="rounded-full border border-border px-3 py-1 text-sm text-muted-foreground">{place}</li>)}
+        </ul>
+      )}
+    </div>
+  </div>
+</section>

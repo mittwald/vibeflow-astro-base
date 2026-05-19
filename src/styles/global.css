@@ -111,6 +111,10 @@ html[data-font-recipe="localCraft"] {
     @apply bg-background text-foreground antialiased;
   }
 
+  [id] {
+    scroll-margin-top: 8rem;
+  }
+
   h1,
   h2,
   h3,

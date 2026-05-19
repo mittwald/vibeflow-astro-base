@@ -1,0 +1,29 @@
+---
+interface Day { label: string; value: string }
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  text?: string;
+  days: readonly Day[];
+}
+
+const { eyebrow, headline, text, days } = Astro.props;
+---
+
+<section data-section="content" data-block-family="opening-hours-block" class="scroll-mt-32 bg-surface-tint px-5 py-20">
+  <div class="mx-auto grid max-w-5xl gap-8 md:grid-cols-[0.8fr_1.2fr]">
+    <div>
+      {eyebrow && <p class="text-sm font-semibold uppercase tracking-[0.24em] text-primary">{eyebrow}</p>}
+      <h2 class="mt-5 font-heading text-4xl font-semibold tracking-tight">{headline}</h2>
+      {text && <p class="mt-5 leading-relaxed text-muted-foreground">{text}</p>}
+    </div>
+    <dl class="divide-y divide-border border-y border-border bg-background px-6">
+      {days.map((day) => (
+        <div class="flex items-center justify-between gap-6 py-4">
+          <dt class="font-semibold">{day.label}</dt>
+          <dd class="text-right text-muted-foreground">{day.value}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>

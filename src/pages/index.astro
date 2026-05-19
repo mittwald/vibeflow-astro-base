@@ -1,24 +1,26 @@
 ---
 import RootLayout from "@/components/RootLayout.astro";
-import HeroLocalService from "@/components/sections/HeroLocalService.astro";
-import LocalTrustStrip from "@/components/sections/LocalTrustStrip.astro";
-import ServiceMosaic from "@/components/sections/ServiceMosaic.astro";
-import ProofBand from "@/components/sections/ProofBand.astro";
-import QuoteTakeover from "@/components/sections/QuoteTakeover.astro";
-import ProcessTimeline from "@/components/sections/ProcessTimeline.astro";
-import CtaFooterTakeover from "@/components/sections/CtaFooterTakeover.astro";
 import { config } from "@/config";
-import { designIdentity } from "@/design/identity";
 ---
 
-<RootLayout title={`${config.name} - ${config.tagline}`} description={config.description}>
-  <div data-design-archetype={designIdentity.archetype} data-design-motif={designIdentity.visualMotif}>
-    <HeroLocalService />
-    <LocalTrustStrip />
-    <ServiceMosaic />
-    <ProofBand />
-    <QuoteTakeover />
-    <ProcessTimeline />
-    <CtaFooterTakeover />
-  </div>
+<RootLayout
+  title={`${config.name} - ${config.tagline}`}
+  description={config.description}
+>
+  <main data-vibeflow-page="composition-canvas" class="min-h-[40vh]">
+    <!--
+      This file is intentionally not a finished example landing page.
+
+      Build each customer homepage from the block library instead:
+
+      1. Determine business type and design DNA.
+      2. Select blocks from src/landing/registry.ts.
+      3. Use composition hints from src/landing/composition-rules.ts.
+      4. Compose a fresh section order.
+      5. Use LocalInfoBar only when it is clearly useful.
+      6. Run pnpm design:audit after generating content.
+
+      Do not copy a previous generated page and only replace the text.
+    -->
+  </main>
 </RootLayout>

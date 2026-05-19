@@ -1,0 +1,20 @@
+---
+interface Link { label: string; href: string }
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  text?: string;
+  cta?: Link;
+}
+
+const { eyebrow, headline, text, cta } = Astro.props;
+---
+
+<section data-section="cta" data-block-family="cta-full-bleed" class="full-bleed scroll-mt-32 bg-primary px-5 py-20 text-primary-foreground lg:py-28">
+  <div class="mx-auto max-w-6xl">
+    {eyebrow && <p class="text-sm font-semibold uppercase tracking-[0.24em] opacity-70">{eyebrow}</p>}
+    <h2 class="mt-5 max-w-4xl font-heading text-5xl font-semibold leading-tight tracking-tight sm:text-6xl">{headline}</h2>
+    {text && <p class="mt-6 max-w-2xl text-lg leading-relaxed opacity-80">{text}</p>}
+    {cta && <a href={cta.href} class="mt-8 inline-flex min-h-12 items-center rounded-full bg-background px-5 text-sm font-semibold text-foreground">{cta.label}</a>}
+  </div>
+</section>
