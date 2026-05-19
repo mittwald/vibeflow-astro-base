@@ -1,0 +1,54 @@
+---
+import { Icon } from "astro-icon/components";
+
+const services = [
+  {
+    icon: "lucide:shovel",
+    title: "Aussenanlagen",
+    text: "Wege, Einfahrten, kleine Mauern und sauber geplante Flaechen rund ums Haus.",
+    className: "bg-surface-strong text-surface-strong-foreground md:col-span-2",
+  },
+  {
+    icon: "lucide:trees",
+    title: "Gartenpflege",
+    text: "Regelmaessige Pflege, Rueckschnitt und saisonale Arbeiten mit Plan.",
+    className: "bg-primary-soft text-primary-soft-foreground",
+  },
+  {
+    icon: "lucide:fence",
+    title: "Beete & Begrenzungen",
+    text: "Struktur fuer Gruenflaechen, Beete und Nutzbereiche.",
+    className: "bg-card border-border border",
+  },
+  {
+    icon: "lucide:droplets",
+    title: "Bewässerung",
+    text: "Praktische Loesungen fuer weniger Aufwand im Alltag.",
+    className: "bg-accent-2 text-accent-2-foreground md:col-span-2",
+  },
+];
+---
+
+<section id="leistungen" class="px-5 py-20 lg:py-28">
+  <div class="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+    <div class="lg:sticky lg:top-28">
+      <p class="text-primary text-sm font-semibold uppercase tracking-[0.24em]">Leistungen</p>
+      <h2 class="font-heading mt-4 max-w-lg text-4xl leading-tight font-semibold tracking-tight sm:text-6xl">
+        Keine Paketliste. Ein sinnvoller Plan fuer Ihr Grundstueck.
+      </h2>
+      <p class="text-muted-foreground mt-5 max-w-md leading-relaxed">
+        Gute lokale Websites brauchen nicht den SaaS-Look. Sie muessen schnell zeigen: Was wird angeboten, wie verlaesslich ist der Betrieb, wie nehme ich Kontakt auf?
+      </p>
+    </div>
+
+    <div class="grid auto-rows-fr gap-4 md:grid-cols-2">
+      {services.map((service, index) => (
+        <article class:list={["rounded-4xl p-7 shadow-sm", service.className, index === 0 && "md:min-h-72"]}>
+          <Icon name={service.icon} class="h-7 w-7 opacity-80" />
+          <h3 class="font-heading mt-8 text-3xl font-semibold tracking-tight">{service.title}</h3>
+          <p class="mt-4 max-w-sm text-sm leading-relaxed opacity-75">{service.text}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

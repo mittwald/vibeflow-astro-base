@@ -6,11 +6,11 @@ import node from "@astrojs/node";
 import icon from "astro-icon";
 import sitemap from "@astrojs/sitemap";
 import favicons from "astro-favicons";
-import elementIds from "./plugins/vite-plugin-element-ids";
-// Keep in sync with config.site in src/config.ts
+import elementIds from "./plugins/vite-plugin-element-ids.js";
+
+// Keep in sync with config.site in src/config.ts.
 const site = "https://example.com";
 
-// https://astro.build/config
 export default defineConfig({
   site,
   output: "static",
@@ -19,7 +19,6 @@ export default defineConfig({
     checkOrigin: true,
     allowedDomains: [{ hostname: new URL(site).hostname, protocol: "https" }],
   },
-
   fonts: [
     {
       provider: fontProviders.google(),
@@ -28,8 +27,28 @@ export default defineConfig({
       weights: ["100 900"],
       fallbacks: ["sans-serif"],
     },
+    {
+      provider: fontProviders.google(),
+      name: "Space Grotesk",
+      cssVariable: "--font-space-grotesk",
+      weights: ["300 700"],
+      fallbacks: ["sans-serif"],
+    },
+    {
+      provider: fontProviders.google(),
+      name: "Fraunces",
+      cssVariable: "--font-fraunces",
+      weights: ["300 900"],
+      fallbacks: ["serif"],
+    },
+    {
+      provider: fontProviders.google(),
+      name: "Bricolage Grotesque",
+      cssVariable: "--font-bricolage",
+      weights: ["200 800"],
+      fallbacks: ["sans-serif"],
+    },
   ],
-
   vite: {
     plugins: [
       elementIds({ enabled: process.env.PUBLIC_VISUAL_EDITOR === "true" }),
@@ -66,10 +85,8 @@ export default defineConfig({
         : undefined,
     },
   },
-
   devToolbar: {
     enabled: false,
   },
-
   integrations: [react(), icon(), sitemap(), favicons()],
 });

@@ -1,0 +1,61 @@
+---
+import GradientField from "@/components/visual/GradientField.astro";
+import DeviceFrame from "@/components/visual/DeviceFrame.astro";
+import VisualMotif from "@/components/visual/VisualMotif.astro";
+import { config } from "@/config";
+---
+
+<section class="relative overflow-hidden px-5 pt-32 pb-20 sm:pt-40 lg:pb-28">
+  <GradientField intensity="strong" />
+  <div class="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[0.95fr_1.05fr]">
+    <div class="max-w-2xl">
+      <p class="text-primary text-sm font-semibold uppercase tracking-[0.24em]">AI Website Builder Base</p>
+      <h1 class="font-heading mt-5 text-5xl leading-[0.95] font-semibold tracking-tight text-balance sm:text-7xl lg:text-8xl">
+        Weniger Template. Mehr visuelle Richtung.
+      </h1>
+      <p class="text-muted-foreground mt-6 max-w-xl text-lg leading-relaxed sm:text-xl">
+        Diese Basis zwingt Agents zu Design-DNA, variablen Sektionsrhythmen, eigenen Tokens und einem Audit gegen AI-Sameness.
+      </p>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a href={config.navigation.cta.href} class="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex justify-center rounded-full px-6 py-3 text-sm font-semibold transition-colors shadow-lg shadow-primary/20">
+          {config.navigation.cta.label}
+        </a>
+        <a href="#leistungen" class="border-border bg-background/70 hover:bg-background inline-flex justify-center rounded-full border px-6 py-3 text-sm font-semibold transition-colors backdrop-blur">
+          Blueprint ansehen
+        </a>
+      </div>
+    </div>
+
+    <div class="relative lg:ml-auto">
+      <VisualMotif kind="orbital" class="absolute -right-10 -bottom-10 -z-10 h-80 w-80 opacity-95" />
+      <DeviceFrame class="rotate-1">
+        <div class="space-y-4">
+          <div class="grid grid-cols-[1fr_.65fr] gap-3">
+            <div class="bg-background rounded-2xl p-5">
+              <p class="text-muted-foreground text-xs font-semibold uppercase tracking-[0.18em]">Design DNA</p>
+              <div class="bg-primary mt-4 h-3 w-24 rounded-full"></div>
+              <div class="bg-muted mt-5 h-2 w-full rounded-full"></div>
+              <div class="bg-muted mt-2 h-2 w-2/3 rounded-full"></div>
+            </div>
+            <div class="bg-accent-2 rounded-2xl p-5 text-white">
+              <p class="text-3xl font-semibold">4/8</p>
+              <p class="mt-6 text-xs uppercase tracking-[0.18em] text-white/70">Variation Budget</p>
+            </div>
+          </div>
+          <div class="bg-surface-strong text-surface-strong-foreground rounded-2xl p-5">
+            <div class="flex items-center justify-between gap-4">
+              <span class="text-sm font-medium">Audit Status</span>
+              <span class="bg-primary rounded-full px-3 py-1 text-xs font-semibold">passed</span>
+            </div>
+            <div class="mt-5 grid grid-cols-4 gap-2">
+              <span class="bg-white/25 h-16 rounded-xl"></span>
+              <span class="bg-white/10 h-16 rounded-xl"></span>
+              <span class="bg-white/25 h-16 rounded-xl"></span>
+              <span class="bg-white/10 h-16 rounded-xl"></span>
+            </div>
+          </div>
+        </div>
+      </DeviceFrame>
+    </div>
+  </div>
+</section>

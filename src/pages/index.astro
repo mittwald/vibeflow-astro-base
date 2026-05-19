@@ -1,66 +1,24 @@
 ---
 import RootLayout from "@/components/RootLayout.astro";
-import { Button } from "@/components/ui/button";
-import { Icon } from "astro-icon/components";
+import HeroLocalService from "@/components/sections/HeroLocalService.astro";
+import LocalTrustStrip from "@/components/sections/LocalTrustStrip.astro";
+import ServiceMosaic from "@/components/sections/ServiceMosaic.astro";
+import ProofBand from "@/components/sections/ProofBand.astro";
+import QuoteTakeover from "@/components/sections/QuoteTakeover.astro";
+import ProcessTimeline from "@/components/sections/ProcessTimeline.astro";
+import CtaFooterTakeover from "@/components/sections/CtaFooterTakeover.astro";
 import { config } from "@/config";
+import { designIdentity } from "@/design/identity";
 ---
 
-<RootLayout
-  title={`${config.name} – ${config.tagline}`}
-  description="Ihr zuverlässiger Partner vor Ort — schnell, professionell und zum fairen Preis."
->
-  <section
-    class="mx-auto max-w-3xl px-5 py-16 text-center sm:px-4 sm:py-28 lg:py-32"
-  >
-    <h1
-      class="text-foreground text-3xl leading-tight font-bold tracking-tight sm:text-5xl lg:text-6xl"
-    >
-      Ihr zuverlässiger
-      {" "}<span class="text-primary">Partner vor Ort.</span>
-    </h1>
-
-    <p
-      class="text-muted-foreground mx-auto mt-4 max-w-xl text-base leading-relaxed sm:mt-5 sm:text-lg"
-    >
-      Professionell, schnell und zum fairen Preis. Nehmen Sie Kontakt auf oder
-      vereinbaren Sie direkt einen Termin.
-    </p>
-
-    <div
-      class="mt-6 flex flex-col items-center gap-3 sm:mt-7 sm:flex-row sm:justify-center"
-    >
-      <a href="/kontakt" class="w-full sm:w-auto">
-        <Button
-          size="lg"
-          className="h-12 w-full px-8 text-base font-semibold sm:h-11 sm:w-auto"
-        >
-          Termin vereinbaren
-        </Button>
-      </a>
-      <a href="#leistungen" class="w-full sm:w-auto">
-        <Button
-          variant="outline"
-          size="lg"
-          className="h-12 w-full px-8 text-base sm:h-11 sm:w-auto"
-        >
-          Mehr erfahren
-        </Button>
-      </a>
-    </div>
-
-    <div class="mt-6 flex items-center justify-center gap-2 sm:mt-8">
-      <div class="flex">
-        {
-          Array.from({ length: 5 }).map(() => (
-            <Icon
-              name="lucide:star"
-              class="h-4 w-4 fill-primary text-primary"
-            />
-          ))
-        }
-      </div>
-      <span class="text-foreground text-sm font-medium">4.9</span>
-      <span class="text-muted-foreground text-sm">· 100+ Bewertungen</span>
-    </div>
-  </section>
+<RootLayout title={`${config.name} - ${config.tagline}`} description={config.description}>
+  <div data-design-archetype={designIdentity.archetype} data-design-motif={designIdentity.visualMotif}>
+    <HeroLocalService />
+    <LocalTrustStrip />
+    <ServiceMosaic />
+    <ProofBand />
+    <QuoteTakeover />
+    <ProcessTimeline />
+    <CtaFooterTakeover />
+  </div>
 </RootLayout>

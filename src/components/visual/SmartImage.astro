@@ -1,0 +1,22 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  loading?: "lazy" | "eager";
+  class?: string;
+}
+
+const { src, alt, width = 1200, height = 800, loading = "lazy", class: className = "" } = Astro.props;
+---
+
+<img
+  src={src}
+  alt={alt}
+  width={width}
+  height={height}
+  loading={loading}
+  decoding="async"
+  class:list={["h-auto max-w-full rounded-3xl object-cover", className]}
+/>

@@ -1,0 +1,21 @@
+---
+interface Props {
+  intensity?: "quiet" | "strong";
+  class?: string;
+}
+
+const { intensity = "quiet", class: className = "" } = Astro.props;
+---
+
+<div
+  aria-hidden="true"
+  class:list={[
+    "pointer-events-none absolute inset-0 -z-10 overflow-hidden",
+    intensity === "strong" ? "opacity-100" : "opacity-70",
+    className,
+  ]}
+>
+  <div class="bg-primary/20 absolute -top-32 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full blur-3xl"></div>
+  <div class="bg-accent-2/20 absolute right-0 bottom-0 h-96 w-96 translate-x-1/3 rounded-full blur-3xl"></div>
+  <div class="dot-grid absolute inset-0 opacity-35"></div>
+</div>

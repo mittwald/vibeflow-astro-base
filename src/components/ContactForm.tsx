@@ -7,9 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 export function ContactForm() {
-  const [status, setStatus] = useState<
-    "idle" | "sending" | "success" | "error"
-  >("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
   const [timestamp, setTimestamp] = useState(() => Date.now().toString());
 
@@ -25,6 +23,7 @@ export function ContactForm() {
         method: "POST",
         body: formData,
       });
+
       const data = await res.json();
 
       if (data.success) {
@@ -44,7 +43,7 @@ export function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="firstName">
             Vorname <span className="text-destructive">*</span>
@@ -59,7 +58,7 @@ export function ContactForm() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="email">
             E-Mail-Adresse <span className="text-destructive">*</span>
@@ -76,16 +75,9 @@ export function ContactForm() {
         <Label htmlFor="message">
           Nachricht <span className="text-destructive">*</span>
         </Label>
-        <Textarea
-          id="message"
-          name="message"
-          required
-          minLength={10}
-          className="min-h-[15rem]"
-        />
+        <Textarea id="message" name="message" required minLength={10} className="min-h-[15rem]" />
       </div>
 
-      {/* Honeypot */}
       <div className="absolute -left-[9999px]" aria-hidden="true">
         <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" />
       </div>
@@ -93,29 +85,19 @@ export function ContactForm() {
       <input type="hidden" name="_timestamp" value={timestamp} />
 
       <Button type="submit" className="w-full" disabled={status === "sending"}>
-        {status === "sending" ? "Wird gesendet…" : "Nachricht senden"}
+        {status === "sending" ? "Wird gesendet..." : "Nachricht senden"}
       </Button>
 
       <p className="text-muted-foreground text-sm">
-        Detaillierte Informationen zum Umgang mit Nutzerdaten findest du in
-        unserer{" "}
-        <a
-          href="/datenschutz"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-foreground underline underline-offset-4"
-        >
-          Datenschutzerklärung
+        Detaillierte Informationen zum Umgang mit Nutzerdaten findest du in unserer{" "}
+        <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="hover:text-foreground underline underline-offset-4">
+          Datenschutzerklaerung
         </a>
         .
       </p>
 
-      {status === "success" && (
-        <p className="text-success text-sm">{message}</p>
-      )}
-      {status === "error" && (
-        <p className="text-destructive text-sm">{message}</p>
-      )}
+      {status === "success" && <p className="text-success text-sm">{message}</p>}
+      {status === "error" && <p className="text-destructive text-sm">{message}</p>}
     </form>
   );
 }

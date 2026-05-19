@@ -1,35 +1,112 @@
 ---
 import { config } from "@/config";
+import SiteBrand from "@/components/SiteBrand.astro";
 
-const { name, navigation } = config;
+const { name, navigation, tagline, design, business } = config;
 const links = navigation.footer;
+const variant = design.footer;
 ---
 
-<footer class="border-border border-t">
-  <div
-    class="mx-auto flex max-w-5xl flex-col items-center gap-2 px-4 py-4 sm:flex-row sm:justify-between sm:gap-0"
-  >
-    <p class="text-muted-foreground text-sm">
-      &copy; {name}
-      {new Date().getFullYear()}
-    </p>
-    {
-      links.length > 0 && (
+{variant === "takeover" ? (
+  <footer class="bg-surface-strong text-surface-strong-foreground full-bleed mt-20">
+    <div class="mx-auto grid max-w-6xl gap-10 px-5 py-12 md:grid-cols-[1.3fr_.7fr] md:items-end lg:py-16">
+      <div>
+        <p class="text-surface-strong-foreground/60 text-sm font-medium uppercase tracking-[0.2em]">Naechster Schritt</p>
+        <h2 class="font-heading mt-4 max-w-3xl text-4xl leading-tight font-semibold tracking-tight md:text-6xl">
+          Aus einer guten Vorlage wird eine Website mit eigener Handschrift.
+        </h2>
+      </div>
+      <div class="md:text-right">
+        <a
+          href={navigation.cta.href}
+          class="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex rounded-full px-5 py-3 text-sm font-semibold transition-colors"
+        >
+          {navigation.cta.label}
+        </a>
+      </div>
+    </div>
+    <div class="border-white/10 border-t">
+      <div class="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-5 text-sm text-white/65 sm:flex-row sm:items-center sm:justify-between">
+        <p>&copy; {name} {new Date().getFullYear()} - {tagline}</p>
+        {links.length > 0 && (
+          <nav aria-label="Footer-Navigation">
+            <ul class="flex flex-wrap items-center gap-4 sm:gap-6">
+              {links.map((link) => (
+                <li><a href={link.href} class="hover:text-white transition-colors">{link.label}</a></li>
+              ))}
+            </ul>
+          </nav>
+        )}
+      </div>
+    </div>
+  </footer>
+) : variant === "contact-heavy" ? (
+  <footer class="bg-surface-strong text-surface-strong-foreground full-bleed mt-16">
+    <div class="mx-auto grid max-w-6xl gap-10 px-5 py-12 md:grid-cols-[1fr_1fr_.7fr] lg:py-16">
+      <div>
+        <SiteBrand class="text-surface-strong-foreground" />
+        <p class="mt-5 max-w-sm text-sm leading-relaxed text-surface-strong-foreground/70">{tagline}</p>
+      </div>
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-surface-strong-foreground/55">Kontakt</p>
+        <div class="mt-5 space-y-2 text-sm text-surface-strong-foreground/78">
+          <p>{business.address}</p>
+          <p><a href={`tel:${business.phone.replaceAll(" ", "")}`} class="hover:text-white transition-colors">{business.phone}</a></p>
+          <p><a href={`mailto:${business.email}`} class="hover:text-white transition-colors">{business.email}</a></p>
+          <p>{business.hours}</p>
+        </div>
+      </div>
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-surface-strong-foreground/55">Seiten</p>
+        {links.length > 0 && (
+          <nav aria-label="Footer-Navigation" class="mt-5">
+            <ul class="space-y-2 text-sm text-surface-strong-foreground/78">
+              {links.map((link) => (
+                <li><a href={link.href} class="hover:text-white transition-colors">{link.label}</a></li>
+              ))}
+            </ul>
+          </nav>
+        )}
+      </div>
+    </div>
+    <div class="border-white/10 border-t">
+      <div class="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-5 text-xs text-surface-strong-foreground/55 sm:flex-row sm:items-center sm:justify-between">
+        <p>&copy; {name} {new Date().getFullYear()}</p>
+        <p>{business.serviceArea}</p>
+      </div>
+    </div>
+  </footer>
+) : variant === "sitemap" ? (
+  <footer class="border-border bg-surface-tint border-t">
+    <div class="mx-auto grid max-w-6xl gap-8 px-5 py-10 sm:grid-cols-[1fr_auto]">
+      <div>
+        <SiteBrand />
+        <p class="text-muted-foreground mt-4 max-w-md text-sm">{tagline}</p>
+      </div>
+      {links.length > 0 && (
         <nav aria-label="Footer-Navigation">
-          <ul class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+          <ul class="grid gap-2 text-sm sm:grid-cols-2 sm:gap-x-8">
             {links.map((link) => (
-              <li>
-                <a
-                  href={link.href}
-                  class="text-muted-foreground hover:text-foreground text-sm transition-colors"
-                >
-                  {link.label}
-                </a>
-              </li>
+              <li><a href={link.href} class="text-muted-foreground hover:text-foreground transition-colors">{link.label}</a></li>
             ))}
           </ul>
         </nav>
-      )
-    }
-  </div>
-</footer>
+      )}
+    </div>
+  </footer>
+) : (
+  <footer class="border-border border-t">
+    <div class="mx-auto flex max-w-6xl flex-col items-center gap-3 px-5 py-5 sm:flex-row sm:justify-between">
+      <p class="text-muted-foreground text-sm">&copy; {name} {new Date().getFullYear()}</p>
+      {links.length > 0 && (
+        <nav aria-label="Footer-Navigation">
+          <ul class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+            {links.map((link) => (
+              <li><a href={link.href} class="text-muted-foreground hover:text-foreground text-sm transition-colors">{link.label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      )}
+    </div>
+  </footer>
+)}

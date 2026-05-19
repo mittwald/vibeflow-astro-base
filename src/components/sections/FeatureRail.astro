@@ -1,0 +1,45 @@
+---
+import { Icon } from "astro-icon/components";
+
+const features = [
+  {
+    icon: "lucide:fingerprint",
+    title: "Design-DNA als persistenter Zustand",
+    text: "Agents legen Archetyp, Dichte, Typografie, Container-Rhythmus, Formensprache und Motivstrategie ab, bevor sie Code schreiben.",
+  },
+  {
+    icon: "lucide:route",
+    title: "Sektionsrhythmus statt Einheitscontainer",
+    text: "Die Startseite wechselt bewusst zwischen narrow, wide, full-bleed und asymmetrischen Bereichen.",
+  },
+  {
+    icon: "lucide:scan-line",
+    title: "Audit gegen AI-Sameness",
+    text: "Ein Script findet typische Signaturen wie zentrierte max-w-3xl Heros, monotone Grids und fehlende Akzent-Tokens.",
+  },
+];
+---
+
+<section id="leistungen" class="px-5 py-20 lg:py-28">
+  <div class="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.85fr_1.15fr]">
+    <div>
+      <p class="text-primary text-sm font-semibold uppercase tracking-[0.24em]">Leistungen</p>
+      <h2 class="font-heading mt-4 max-w-lg text-4xl leading-tight font-semibold tracking-tight sm:text-6xl">
+        Feature-Darstellung ohne drei gleiche Cards.
+      </h2>
+    </div>
+    <div class="divide-border border-border border-y">
+      {features.map((feature) => (
+        <article class="grid gap-5 py-7 sm:grid-cols-[4rem_1fr] sm:py-9">
+          <div class="bg-primary-soft text-primary-soft-foreground flex h-14 w-14 items-center justify-center rounded-2xl">
+            <Icon name={feature.icon} class="h-6 w-6" />
+          </div>
+          <div>
+            <h3 class="font-heading text-2xl font-semibold tracking-tight">{feature.title}</h3>
+            <p class="text-muted-foreground mt-3 max-w-2xl leading-relaxed">{feature.text}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

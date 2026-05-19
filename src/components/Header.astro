@@ -1,58 +1,158 @@
 ---
 import { config } from "@/config";
 import { MobileNav } from "@/components/MobileNav";
-import { Icon } from "astro-icon/components";
+import SiteBrand from "@/components/SiteBrand.astro";
 
-const { name, navigation } = config;
+const { name, navigation, design, business } = config;
 const links = navigation.header;
+const cta = navigation.cta;
 const currentPath = Astro.url.pathname;
+const variant = design.header;
+const isActive = (href: string) => currentPath === href || currentPath === `${href}/`;
+
+const wrapperClasses = {
+  plain: "border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur",
+  floating: "pointer-events-none fixed inset-x-0 top-4 z-40 px-3",
+  split: "border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur",
+  transparent: "absolute inset-x-0 top-0 z-40 text-white",
+  boxed: "sticky top-0 z-40 px-3 pt-3",
+  local: "border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur",
+  centered: "border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur",
+};
+
+const navClasses = {
+  plain: "mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:py-4",
+  floating:
+    "border-border bg-background/88 pointer-events-auto mx-auto flex max-w-6xl items-center justify-between rounded-full border px-4 py-3 shadow-lg shadow-black/5 backdrop-blur-xl sm:px-5",
+  split: "mx-auto grid max-w-6xl grid-cols-3 items-center px-4 py-3 sm:py-4",
+  transparent: "mx-auto flex max-w-6xl items-center justify-between px-4 py-5",
+  boxed:
+    "border-border bg-background/92 mx-auto flex max-w-6xl items-center justify-between rounded-3xl border px-4 py-3 shadow-xl shadow-black/5 backdrop-blur-xl sm:px-5",
+  local: "mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:py-4",
+  centered: "mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:py-4",
+};
+
 ---
 
-<header class="border-border border-b">
-  <nav
-    aria-label="Hauptnavigation"
-    class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:py-4"
-  >
-    <a
-      href="/"
-      class="flex items-center gap-2 text-lg font-semibold"
-      aria-label="Startseite"
-    >
-      <Icon name="lucide:sparkles" class="h-5 w-5 text-primary" />
-      {name}
-    </a>
-
-    <div class="flex items-center gap-6">
-      {/* Desktop */}
-      {
-        links.length > 0 && (
-          <ul class="hidden items-center gap-6 md:flex">
-            {links.map((link) => {
-              const isActive =
-                currentPath === link.href || currentPath === link.href + "/";
-              return (
-                <li>
-                  <a
-                    href={link.href}
-                    class:list={[
-                      "text-sm transition-colors",
-                      isActive
-                        ? "text-foreground font-medium"
-                        : "text-muted-foreground hover:text-foreground",
-                    ]}
-                    aria-current={isActive ? "page" : undefined}
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        )
-      }
-
-      {/* Mobile */}
-      <MobileNav links={links} name={name} client:load />
+{variant === "local" ? (
+  <header class="border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur">
+    <div class="bg-surface-strong text-surface-strong-foreground hidden sm:block">
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-2 text-xs">
+        <p>{business.serviceArea}</p>
+        <div class="flex items-center gap-5 text-surface-strong-foreground/80">
+          <a href={`tel:${business.phone.replaceAll(" ", "")}`} class="hover:text-white transition-colors">{business.phone}</a>
+          <span>{business.hours}</span>
+        </div>
+      </div>
     </div>
-  </nav>
-</header>
+    <nav aria-label="Hauptnavigation" class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:py-4">
+      <SiteBrand />
+
+      {links.length > 0 && (
+        <ul class="hidden items-center gap-6 md:flex">
+          {links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class:list={[
+                  "text-sm transition-colors",
+                  isActive(link.href) ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground",
+                ]}
+                aria-current={isActive(link.href) ? "page" : undefined}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div class="flex items-center gap-2">
+        <a
+          href={cta.href}
+          class="bg-primary text-primary-foreground hover:bg-primary/90 hidden rounded-full px-4 py-2 text-sm font-semibold transition-colors shadow-sm md:inline-flex"
+        >
+          {cta.label}
+        </a>
+        <MobileNav links={links} name={name} client:media="(max-width: 767px)" />
+      </div>
+    </nav>
+  </header>
+) : variant === "centered" ? (
+  <header class="border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur">
+    <div class="mx-auto max-w-6xl px-4 py-4">
+      <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+        <div class="md:hidden">
+          <MobileNav links={links} name={name} client:media="(max-width: 767px)" />
+        </div>
+        <div class="col-start-2"><SiteBrand /></div>
+        <div class="hidden justify-self-end md:block">
+          <a href={cta.href} class="text-primary text-sm font-semibold hover:underline">{cta.label}</a>
+        </div>
+      </div>
+      {links.length > 0 && (
+        <ul class="mt-4 hidden items-center justify-center gap-7 md:flex">
+          {links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class:list={[
+                  "text-sm transition-colors",
+                  isActive(link.href) ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground",
+                ]}
+                aria-current={isActive(link.href) ? "page" : undefined}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </header>
+) : (
+  <header class={wrapperClasses[variant]}>
+    <nav aria-label="Hauptnavigation" class={navClasses[variant]}>
+      <SiteBrand />
+
+      {links.length > 0 && (
+        <ul class:list={[
+          "hidden items-center gap-6 md:flex",
+          variant === "split" && "justify-self-center",
+          variant !== "split" && "ml-auto mr-6",
+        ]}>
+          {links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class:list={[
+                  "text-sm transition-colors",
+                  isActive(link.href) ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground",
+                  variant === "transparent" && !isActive(link.href) && "text-white/75 hover:text-white",
+                ]}
+                aria-current={isActive(link.href) ? "page" : undefined}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div class:list={["flex items-center gap-2", variant === "split" && "justify-self-end"]}>
+        <a
+          href={cta.href}
+          class:list={[
+            "hidden rounded-full px-4 py-2 text-sm font-semibold transition-colors shadow-sm md:inline-flex",
+            variant === "transparent"
+              ? "bg-white text-foreground hover:bg-white/90"
+              : "bg-primary text-primary-foreground hover:bg-primary/90",
+          ]}
+        >
+          {cta.label}
+        </a>
+        <MobileNav links={links} name={name} client:media="(max-width: 767px)" />
+      </div>
+    </nav>
+  </header>
+)}

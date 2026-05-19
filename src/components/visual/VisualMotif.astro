@@ -1,0 +1,40 @@
+---
+interface Props {
+  kind?: "orbital" | "ribbons" | "blocks";
+  class?: string;
+}
+
+const { kind = "orbital", class: className = "" } = Astro.props;
+---
+
+<div aria-hidden="true" class:list={["relative min-h-72 overflow-hidden rounded-4xl", className]}>
+  {kind === "orbital" && (
+    <div class="absolute inset-0 bg-surface-strong text-surface-strong-foreground">
+      <div class="border-white/15 absolute top-1/2 left-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full border"></div>
+      <div class="border-white/15 absolute top-1/2 left-1/2 h-48 w-96 -translate-x-1/2 -translate-y-1/2 rotate-12 rounded-full border"></div>
+      <div class="bg-primary absolute top-1/2 left-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full blur-sm"></div>
+      <div class="bg-accent-2 absolute top-12 right-14 h-14 w-14 rounded-full"></div>
+      <div class="bg-primary-soft absolute bottom-12 left-16 h-10 w-10 rounded-full"></div>
+      <div class="dot-grid absolute inset-0 opacity-20"></div>
+    </div>
+  )}
+  {kind === "ribbons" && (
+    <div class="absolute inset-0 bg-primary-soft">
+      <div class="bg-primary absolute top-10 left-1/2 h-16 w-[130%] -translate-x-1/2 rotate-[-8deg] rounded-full"></div>
+      <div class="bg-accent-2 absolute top-32 left-1/2 h-20 w-[120%] -translate-x-1/2 rotate-[10deg] rounded-full"></div>
+      <div class="bg-surface-strong absolute bottom-12 left-1/2 h-14 w-[110%] -translate-x-1/2 rotate-[-3deg] rounded-full"></div>
+    </div>
+  )}
+  {kind === "blocks" && (
+    <div class="absolute inset-0 grid grid-cols-4 gap-3 bg-surface-tint p-4">
+      <div class="bg-primary col-span-2 row-span-2 rounded-3xl"></div>
+      <div class="bg-background rounded-3xl"></div>
+      <div class="bg-accent-2 rounded-3xl"></div>
+      <div class="bg-surface-strong rounded-3xl"></div>
+      <div class="bg-primary-soft col-span-2 rounded-3xl"></div>
+      <div class="bg-background col-span-2 rounded-3xl"></div>
+      <div class="bg-primary rounded-3xl"></div>
+      <div class="bg-muted rounded-3xl"></div>
+    </div>
+  )}
+</div>

@@ -5,7 +5,8 @@
 
 @theme inline {
   --font-sans: var(--font-inter), sans-serif;
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-display), var(--font-inter), sans-serif;
+
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -13,18 +14,28 @@
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
+  --color-accent-2-foreground: var(--accent-2-foreground);
+  --color-accent-2: var(--accent-2);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
+  --color-primary-soft-foreground: var(--primary-soft-foreground);
+  --color-primary-soft: var(--primary-soft);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
+  --color-surface-tint: var(--surface-tint);
+  --color-surface-strong-foreground: var(--surface-strong-foreground);
+  --color-surface-strong: var(--surface-strong);
+  --color-grid-line: var(--grid-line);
+  --color-spotlight: var(--spotlight);
+
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -35,36 +46,93 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: oklch(0.992 0.01 90);
+  --foreground: oklch(0.17 0.025 145);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.17 0.025 145);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.627 0.218 33.7); /* orange-600 */
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.17 0.025 145);
+
+  --primary: oklch(0.47 0.115 145);
+  --primary-foreground: oklch(0.985 0.006 95);
+  --primary-soft: oklch(0.92 0.07 132);
+  --primary-soft-foreground: oklch(0.24 0.075 145);
+
+  --secondary: oklch(0.94 0.035 96);
+  --secondary-foreground: oklch(0.24 0.04 105);
+  --muted: oklch(0.955 0.022 98);
+  --muted-foreground: oklch(0.47 0.035 110);
+  --accent: oklch(0.96 0.035 82);
+  --accent-foreground: oklch(0.24 0.04 105);
+  --accent-2: oklch(0.7 0.13 65);
+  --accent-2-foreground: oklch(0.18 0.035 80);
+
+  --surface-tint: oklch(0.955 0.045 94);
+  --surface-strong: oklch(0.22 0.055 145);
+  --surface-strong-foreground: oklch(0.985 0.01 96);
+  --grid-line: oklch(0.86 0.035 110);
+  --spotlight: oklch(0.82 0.13 78);
+
   --success: oklch(0.527 0.154 150);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --radius: 0.625rem;
+  --border: oklch(0.88 0.025 110);
+  --input: oklch(0.88 0.025 110);
+  --ring: oklch(0.56 0.095 145);
+  --radius: 1rem;
+  --font-display: var(--font-bricolage), var(--font-inter), sans-serif;
+}
+
+html[data-font-recipe="cleanSaas"] {
+  --font-display: var(--font-inter), sans-serif;
+}
+
+html[data-font-recipe="editorial"] {
+  --font-display: var(--font-fraunces), var(--font-inter), serif;
+}
+
+html[data-font-recipe="boldStartup"] {
+  --font-display: var(--font-space-grotesk), var(--font-inter), sans-serif;
+}
+
+html[data-font-recipe="localCraft"] {
+  --font-display: var(--font-bricolage), var(--font-inter), sans-serif;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
+
   html {
-    @apply overflow-x-hidden font-sans;
+    @apply overflow-x-hidden font-sans scroll-smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-heading {
+    font-family: var(--font-heading);
+  }
+
+  ::selection {
+    background: var(--primary-soft);
+    color: var(--primary-soft-foreground);
+  }
+}
+
+@layer utilities {
+  .full-bleed {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+  }
+
+  .dot-grid {
+    background-image: radial-gradient(var(--grid-line) 1px, transparent 1px);
+    background-size: 20px 20px;
   }
 }

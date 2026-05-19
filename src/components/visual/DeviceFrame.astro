@@ -1,0 +1,42 @@
+---
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  class?: string;
+}
+
+const { eyebrow = "Live Preview", title = "Design System", class: className = "" } = Astro.props;
+---
+
+<div class:list={["border-border bg-card overflow-hidden rounded-3xl border shadow-2xl shadow-black/10", className]}>
+  <div class="border-border bg-muted/60 flex items-center justify-between border-b px-4 py-3">
+    <div class="flex gap-1.5">
+      <span class="bg-destructive/70 h-2.5 w-2.5 rounded-full"></span>
+      <span class="bg-spotlight h-2.5 w-2.5 rounded-full"></span>
+      <span class="bg-success h-2.5 w-2.5 rounded-full"></span>
+    </div>
+    <p class="text-muted-foreground text-xs font-medium">{eyebrow}</p>
+  </div>
+  <div class="relative p-5 sm:p-6">
+    <div class="bg-surface-tint rounded-2xl p-5">
+      <div class="mb-5 flex items-center justify-between">
+        <p class="font-heading text-lg font-semibold">{title}</p>
+        <span class="bg-primary-soft text-primary-soft-foreground rounded-full px-2.5 py-1 text-xs font-semibold">AI ready</span>
+      </div>
+      <slot>
+        <div class="grid gap-3">
+          <div class="bg-background rounded-xl p-4 shadow-sm">
+            <div class="bg-primary h-2 w-24 rounded-full"></div>
+            <div class="bg-muted mt-4 h-2 w-full rounded-full"></div>
+            <div class="bg-muted mt-2 h-2 w-2/3 rounded-full"></div>
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="bg-background h-20 rounded-xl"></div>
+            <div class="bg-accent-2 h-20 rounded-xl"></div>
+            <div class="bg-background h-20 rounded-xl"></div>
+          </div>
+        </div>
+      </slot>
+    </div>
+  </div>
+</div>

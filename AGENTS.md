@@ -2,230 +2,209 @@
 
 ## Project Overview
 
-This is an Astro 6 site with React, Tailwind CSS 4, and shadcn/ui (Base Luma style). It uses hybrid rendering: pages are pre-rendered by default, with SSR opt-in per page.
+This is an Astro 6 site base for AI-generated marketing websites. It uses React, Tailwind CSS 4, shadcn-style primitives, Astro Font API, semantic theme tokens and a design audit step.
+
+The goal is not to generate another generic landing page. The goal is to generate a page with a clear visual identity, deliberate section rhythm and a recognizable motif.
 
 ## Tech Stack
 
-- **Framework**: Astro 6 with `@astrojs/node` adapter (standalone mode)
-- **UI**: React 19, shadcn/ui v4 (Base Luma style, neutral base color)
-- **Styling**: Tailwind CSS 4 via Vite plugin, `tw-animate-css`
-- **Fonts**: Google Fonts via Astro Font API (configured in `astro.config.mjs`, applied via `<Font />` in RootLayout)
-- **Icons**: astro-icon (Iconify-Sets, rendert zur Buildzeit als reines SVG). shadcn-Komponenten nutzen intern lucide-react.
-- **SEO**: Meta-Tags (title, description, canonical) im RootLayout, `@astrojs/sitemap`, dynamische `robots.txt`
-- **Favicons**: `astro-favicons` generiert aus `public/favicon.svg` alle Varianten (ICO, Apple Touch, Manifest)
-- **Kontaktformular**: React-Komponente mit valibot-Validierung, Honeypot, Time-Based Spam-Schutz, nodemailer (SMTP)
-- **Language**: TypeScript (strict), TSX for components
+- Framework: Astro 6 with `@astrojs/node` adapter.
+- UI: React 19 for interactive islands.
+- Styling: Tailwind CSS 4 via Vite plugin, CSS theme variables, `tw-animate-css`.
+- Fonts: Google Fonts via Astro Font API in `astro.config.mjs`, applied with `<Font />` in `RootLayout.astro`.
+- Icons: `astro-icon` in `.astro` files, `lucide-react` in React components.
+- SEO: Meta tags in `RootLayout.astro`, `@astrojs/sitemap`, dynamic `robots.txt`.
+- Forms: React contact form with valibot validation, honeypot and time-based spam protection.
 
-## Project Structure
+## Core Files
 
+- `src/design/identity.ts`: persistent visual direction for the project.
+- `src/design/font-recipes.ts`: supported font pairings and their mood.
+- `src/design/allowed-ui.ts`: shadcn-style component allowlist for marketing sites.
+- `src/design/section-blueprints.ts`: available page rhythms. The first rhythm is local-service oriented.
+- `src/styles/global.css`: Tailwind v4 theme variables and brand tokens.
+- `scripts/design-audit.mjs`: checks for common AI landing-page sameness.
+
+
+## Default audience bias
+
+Assume many generated sites are for normal local businesses first: trades, practices, restaurants, studios, agencies, clubs, real estate offices, local service providers and small shops. Do not default to a Tech SaaS, dashboard, startup, AI tool or product-led layout unless the brief points there.
+
+For local-business sites, prioritize:
+
+- clear service area, phone number, opening hours and contact CTA,
+- proof of reliability instead of generic star ratings,
+- real work imagery or tactile visual motifs,
+- readable sections over dashboard-like UI,
+- header variants with contact information, not only SaaS navigation.
+
+The first example homepage in this repository intentionally uses a local-service archetype. Treat it as the default audience anchor, not as a fixed template.
+
+## Mandatory: Design DNA before code
+
+Before writing layout code, define the visual direction in `src/design/identity.ts` with these six decisions:
+
+1. Archetype: `editorial`, `poster`, `split-product`, `local-service`, `portfolio`, `magazine`, `luxury-consulting`, or `event-campaign`.
+2. Density: `airy`, `balanced`, or `compact`.
+3. Typography role: `typographic-first`, `image-first`, `product-first`, or `proof-first`.
+4. Container rhythm: for example `narrow -> wide -> full-bleed -> asymmetric -> narrow`.
+5. Shape language: `sharp`, `subtle-rounded`, `soft`, `pill`, or `geometric`.
+6. Image or motif strategy: real imagery, product screens, abstract shapes, pattern system, icons, or pure typography.
+
+All layout, color, type and section decisions must fit that identity. Do not leave `identity.ts` generic after generating a customer site.
+
+## Forbidden default signatures
+
+Avoid these combinations unless the user explicitly asks for them:
+
+- Hero pattern: `mx-auto max-w-3xl ... text-center`.
+- More than two sections using `max-w-7xl mx-auto` or `mx-auto max-w-7xl`.
+- Default sequence: Hero -> 3 feature cards -> Testimonials -> CTA.
+- Feature list as an equal 3-column grid with icon, title and short text.
+- Every section using centered `h2` plus centered subtitle.
+- More than two obvious `bg-card rounded-* border shadow` card panels on a marketing page.
+- Generic trust line with five stars and `100+ Bewertungen`.
+- All sections using the same vertical rhythm, such as only `py-16` or only `py-20`.
+
+## Variation Budget
+
+Every homepage must contain at least 4 of these 8 traits:
+
+- An asymmetric section.
+- A full-bleed color surface.
+- A narrow text section (`max-w-2xl`, `max-w-3xl`, or smaller) that is not the hero.
+- A deliberately wide or edge-to-edge section.
+- A non-card-based feature presentation.
+- A large typographic section without an image.
+- A recurring visual motif.
+- A section order that does not start with a centered hero.
+
+Record the selected traits in `src/design/identity.ts`.
+
+## Layout principles
+
+- Use section composition, not page templates.
+- Prefer strong section rhythm over a stack of similar containers.
+- Use `full-bleed` when a surface should break out of the page frame.
+- Mix narrow, wide, full-bleed and asymmetric containers intentionally.
+- Do not solve every layout with cards.
+- Avoid copy-paste repetition of the same section scaffold.
+- Do not use a Bento grid as decoration. Use a Bento/Mosaic only when it helps explain different content sizes or priorities.
+- For non-tech businesses, prefer a service mosaic, proof strip or process section over product screenshots and metric dashboards.
+
+## Design tokens
+
+Use semantic tokens from `global.css`:
+
+- Core shadcn-style tokens: `background`, `foreground`, `primary`, `muted`, `border`, `card`, etc.
+- Brand extension tokens: `primary-soft`, `accent-2`, `surface-tint`, `surface-strong`, `grid-line`, `spotlight`.
+
+Rules:
+
+- Use at least two tokens beyond `primary` on every homepage.
+- `primary` must not be used only for buttons.
+- Prefer token changes over one-off arbitrary colors.
+- Keep contrast readable.
+
+## Fonts
+
+The project includes four font recipes:
+
+- `cleanSaas`: Inter for body and headings.
+- `editorial`: Inter body, Fraunces headings.
+- `boldStartup`: Inter body, Space Grotesk headings.
+- `localCraft`: Inter body, Bricolage Grotesque headings.
+
+Set the active recipe in `config.design.fontRecipe`. Do not default to Inter-only unless the brand direction truly calls for it.
+
+## shadcn-style component policy
+
+Allowed by default for marketing pages:
+
+- `Button`, `Input`, `Textarea`, `Label`, `Dialog`, `Sheet`, `Accordion`.
+
+Use sparingly and only with a reason:
+
+- `Card`, `Badge`, `Tabs`, `Carousel`, `Tooltip`.
+
+Avoid by default on normal landing pages:
+
+- `Table`, `Command`, `Calendar`, `Resizable`, `Menubar`, `ContextMenu`, `Combobox`.
+
+shadcn-style components are primitives, not a marketing section library. Build sections in HTML plus Tailwind. Use interactive primitives only where the UX needs them.
+
+## Visual motif requirement
+
+Every homepage needs one visual motif:
+
+- real project image,
+- product or UI screenshot,
+- typographic key visual,
+- abstract shape or pattern system,
+- icon or line motif.
+
+Use `src/components/visual/*` as starting points. Do not use generic stock-photo concepts like smiling people at laptops unless the user specifically requests them.
+
+## Header and footer variants
+
+Set variants in `src/config.ts`:
+
+- `config.design.header`: `plain`, `floating`, `split`, `transparent`, `local`, `centered`, or `boxed`.
+- `config.design.footer`: `minimal`, `takeover`, `sitemap`, or `contact-heavy`.
+
+Use variants to make the global frame match the visual identity. For local businesses, prefer `local`, `centered`, or `boxed` before `floating`. Do not leave every project on the same header/footer shape.
+
+## Images
+
+- Local images inside `src/`: use Astro assets (`Image` or `Picture`) when imported statically.
+- Images in `public/`: use regular `<img>` with `loading`, `decoding`, `width`, `height`, and useful `alt`.
+- External images: use explicit width/height and lazy loading unless above the fold.
+- Decorative visuals must use `alt=""` or `aria-hidden="true"`.
+
+## Forms
+
+- `/kontakt` uses `ContactForm.tsx` with `client:load`.
+- The API route is `src/pages/api/contact.ts` and has `prerender = false`.
+- Spam protection: honeypot field `_gotcha` plus time-based check.
+- Minimum submit time is 5 seconds and must stay consistent between docs and code.
+- Do not silently submit if SMTP is not configured.
+
+## Client hydration
+
+Only hydrate components that need client JavaScript.
+
+- Mobile navigation should use `client:media="(max-width: 767px)"`.
+- Contact form uses `client:load` because the form needs immediate interaction.
+- Prefer static Astro components for layout sections.
+
+## Design audit
+
+Run after generating or heavily changing a homepage:
+
+```bash
+pnpm design:audit
 ```
-src/
-  config.ts             # Zentrale Site-Konfiguration (Name, URL, Navigation, API-Keys)
-  components/
-    RootLayout.astro    # Root HTML layout mit Header, Footer, Font, SEO-Meta
-    Header.astro        # Responsive Header mit Desktop-Nav und mobilem Menü
-    Footer.astro        # Footer mit Copyright und Links
-    MobileNav.tsx       # Mobile Navigation (shadcn Sheet, von rechts)
-    ContactForm.tsx     # Kontaktformular (React, valibot, Honeypot, Time-Based)
-    ui/                 # shadcn/ui components
-  lib/
-    utils.ts            # cn() utility for class merging
-    erecht24.ts         # eRecht24 API client (Impressum/Datenschutz)
-  pages/
-    *.astro             # Astro pages (pre-rendered by default)
-    404.astro           # 404-Fehlerseite
-    kontakt.astro       # Kontaktseite mit Formular
-    impressum.astro     # Impressum (eRecht24 API oder Fallback)
-    datenschutz.astro   # Datenschutzerklärung (eRecht24 API oder Fallback)
-    robots.txt.ts       # Dynamische robots.txt mit Sitemap-Link
-    api/contact.ts      # API-Endpoint für Kontaktformular (SSR)
-  styles/
-    global.css          # Tailwind imports, theme variables
-public/
-  favicon.svg           # Quell-Favicon (wird von astro-favicons zu allen Formaten generiert)
-```
 
-## Conventions
+If two or more checks fail, revise the design before finishing. Treat audit failures as design feedback, not as mere lint errors.
 
-### Pages
+The audit checks for:
 
-- Astro pages live in `src/pages/` as `.astro` files
-- Pages are **pre-rendered (static) by default**
-- For SSR pages (forms, dynamic content), add `export const prerender = false` in the frontmatter
-- Use `RootLayout` as the wrapping component for all pages
-- Language is German (`lang="de"`)
+- centered default hero signatures,
+- excessive repeated max-width containers,
+- too many centered headings,
+- too many card-like panels,
+- missing full-bleed surface,
+- missing secondary accent tokens,
+- missing visual motif,
+- repeated vertical spacing.
 
-### Components
+## Quality bar
 
-- Interactive components are React TSX in `src/components/`
-- Use shadcn/ui components from `src/components/ui/`
-- Install new shadcn components with: `pnpm dlx shadcn@latest add <component>`
-- Use the `cn()` utility from `@/lib/utils` for conditional classes
+A completed homepage should be able to answer these questions clearly:
 
-### Styling
-
-- Use Tailwind utility classes, not custom CSS
-- Theme colors are defined as CSS custom properties in `src/styles/global.css`
-- Use semantic color tokens: `bg-background`, `text-foreground`, `bg-primary`, etc.
-
-### Border-Radius
-
-- Anything that reads as a card, panel, button, input, sheet, or visible border must carry an explicit Tailwind `rounded-*` class so it stays tied to the global radius. The point is that the whole site can be flipped between sharp and soft corners later by editing one value.
-- The actual radius is controlled globally by the `--radius` CSS variable in `src/styles/global.css`. Tailwind's `rounded-*` utilities derive their values from it, so any surface with a `rounded-*` class follows that single knob.
-- `rounded-none` is allowed as a deliberate local override — when a specific element should stay sharp regardless of the global setting. Don't reach for it just because the current theme happens to render at radius 0; that hides the element from the global switch.
-- Stick to the shadcn scale: small inline elements `rounded-sm` / `rounded-md`, cards and panels `rounded-lg` / `rounded-xl`, prominent hero or feature surfaces `rounded-2xl` / `rounded-3xl`.
-
-### Equal-Height Cards in Rows
-
-- When two or more cards sit side-by-side in a grid or flex row, they must all render at the same height — the height of the tallest one in the row. Uneven card frames look broken even when each card is internally fine. The content inside cards is allowed to vary (longer descriptions, different CTAs); only the outer frame must stay uniform.
-- Default pattern: parent is `grid grid-cols-N gap-…` and each card is a direct grid child. CSS Grid stretches row cells to match the tallest content automatically — no `h-full` needed unless something disables the stretch.
-- If the card has internal vertical layout (e.g. a CTA pinned to the bottom), use `flex flex-col` on the card and `mt-auto` on the bottom-anchored element so it fills the extra space the stretch produces.
-- If you wrap each card in an extra container (animation wrapper, scroll-reveal, link), put `h-full` on the wrapper AND on the card so the stretch propagates through. In flex-row setups, keep the parent's default `items-stretch` — don't switch to `items-start` / `items-center`, which would undo the stretch.
-
-### Site-Konfiguration
-
-- Zentrale Einstellungen in `src/config.ts` (Name, URL, Navigation, API-Keys)
-- `config.name`: Seitenname, wird in Header, Footer, Mobile Nav und Seitentiteln verwendet
-- `config.tagline`: Tagline, wird auf der Startseite angezeigt
-- `config.site`: URL der Seite — **WICHTIG: muss auch in `astro.config.mjs` (Zeile 10) identisch gepflegt werden** (Astro kann `config.ts` nicht importieren wegen Vite-Init). `allowedDomains` in `astro.config.mjs` leitet sich automatisch aus der dortigen URL ab.
-- `config.navigation.header` / `config.navigation.footer`: Nav-Links als `{ label, href }[]`
-- `config.smtp`: SMTP-Zugangsdaten für Kontaktformular. Default-Host: `mail.agenturserver.de`. STARTTLS: Port 25/587 (`secure: false`), SSL: Port 465 (`secure: true`). Default ist STARTTLS auf Port 587.
-- `config.erecht24.apiKey`: API-Key für eRecht24 Impressum/Datenschutz — ohne Key werden Platzhalter ausgeliefert
-
-### SEO
-
-- RootLayout akzeptiert `title` und `description` Props
-- Canonical URL wird automatisch aus `config.site` + Pfad generiert
-- Sitemap wird beim Build von `@astrojs/sitemap` erzeugt
-- robots.txt wird dynamisch generiert mit Sitemap-Link
-- Favicons werden von `astro-favicons` aus `public/favicon.svg` generiert
-
-### Fonts
-
-- Google Fonts über Astros eingebaute Font API (`astro.config.mjs` → `fonts`-Array)
-- `<Font cssVariable="--font-inter" />` im `<head>` von RootLayout einbinden
-- In `global.css` via `@theme inline` die Tailwind-Variable setzen: `--font-sans: var(--font-inter), sans-serif`
-- Neue Fonts: im `fonts`-Array in `astro.config.mjs` ergänzen, `<Font />` im Layout hinzufügen
-
-### Icons
-
-- `astro-icon` für Astro-Seiten: `import { Icon } from "astro-icon/components"`
-- Rendert zur Buildzeit als inline SVG — kein Client-JS, kein Laden
-- **Erlaubte Icon-Sets: nur `lucide` und `hugeicons`** — keine anderen Icon-Librarys verwenden.
-- Icons ausschließlich über `@iconify-json` Pakete einbinden. Vorinstalliert: `@iconify-json/lucide` und `@iconify-json/hugeicons`.
-- Syntax: `<Icon name="lucide:search" />`, `<Icon name="hugeicons:star" />`
-- `astro-icon` kann NICHT in React-Komponenten verwendet werden, nur in `.astro`-Dateien
-- shadcn/ui-Komponenten nutzen intern `lucide-react` — das nicht entfernen
-
-### Kontaktformular
-
-- `/kontakt` mit React-Komponente `ContactForm.tsx` (`client:load`)
-- API-Endpoint `src/pages/api/contact.ts` (SSR, `prerender = false`)
-- Validierung serverseitig mit valibot (Vorname, Nachname, E-Mail, Nachricht Pflicht; Telefon optional)
-- Spam-Schutz: Honeypot-Feld (`_gotcha`) + Time-Based Check (min. 5s zwischen Laden und Absenden)
-- SMTP-Versand via nodemailer, Konfiguration in `config.smtp`
-- Ohne SMTP-Config → Fehlermeldung "SMTP ist nicht konfiguriert"
-
-### Rechtliche Seiten
-
-- `/impressum` und `/datenschutz` werden über eRecht24 API befüllt (wenn `config.erecht24.apiKey` gesetzt)
-- Ohne API-Key: Platzhalter-Texte (Mustermann-Daten)
-- Mit API-Key aber API-Fehler: Build bricht ab (kein stilles Fallback auf falsche Daten)
-
-### Linting & Formatting
-
-- **ESLint**: `pnpm lint` (check), `pnpm lint:fix` (auto-fix)
-- **Prettier**: `pnpm format` (write), `pnpm format:check` (check)
-- Config: `eslint.config.mjs`, `.prettierrc.mjs`
-- Prettier plugins: `prettier-plugin-astro`, `prettier-plugin-tailwindcss` (Tailwind class sorting)
-- ESLint plugins: `typescript-eslint`, `eslint-plugin-astro`, `@eslint-react/eslint-plugin`
-- `eslint-config-prettier` deaktiviert ESLint-Regeln die mit Prettier kollidieren
-- shadcn/ui-Komponenten (`src/components/ui/`) haben gelockerte Lint-Regeln (generierter Code)
-
-### Path Aliases
-
-- `@/*` maps to `./src/*` (e.g., `import { Button } from "@/components/ui/button"`)
-
-### Bilder
-
-- Für lokale Bilder (im `src/`-Verzeichnis): Immer `import { Image } from 'astro:assets'` verwenden, nicht rohes `<img>`. Astro optimiert die Bilder automatisch (WebP/AVIF, responsive srcset, lazy loading).
-- Syntax: `<Image src={import("../assets/hero.jpg")} alt="Beschreibung" width={1200} height={630} />`
-- Für Bilder in `public/`: Normales `<img>` ist okay, aber `loading="lazy"` und `decoding="async"` setzen (außer beim Hero-Bild above the fold).
-- Für externe Bilder (URLs): `<img>` mit `loading="lazy"` und expliziten `width`/`height` Attributen um Layout Shifts zu vermeiden.
-- Jedes `<img>` und `<Image>` braucht ein aussagekräftiges `alt`-Attribut. Dekorative Bilder: `alt=""`.
-
-### Scroll-Animationen
-
-- `ScrollReveal` (`src/components/ScrollReveal.astro`) ist optional — nicht jede Seite braucht Animationen.
-- Nutze es sparsam: Hero-Bereich braucht keine Animation (ist sofort sichtbar), Sektionen unterhalb des Folds können dezent reinfahren.
-- Maximal 2-3 verschiedene Animationstypen pro Seite, sonst wirkt es unruhig.
-- Staffelung über `delay` nur bei Elementen die gleichzeitig sichtbar werden (z.B. Feature-Karten in einer Reihe), nicht bei Elementen die untereinander stehen.
-- Respektiert `prefers-reduced-motion` automatisch.
-- Verwendung:
-
-```astro
-<ScrollReveal animation="fade-up">
-  <section class="py-20">
-    <h2>Features</h2>
-  </section>
-</ScrollReveal>
-
-<!-- Mit Staffelung -->
-<div class="grid grid-cols-3 gap-8">
-  <ScrollReveal animation="fade-up" delay={0}>
-    <div>Feature 1</div>
-  </ScrollReveal>
-  <ScrollReveal animation="fade-up" delay={100}>
-    <div>Feature 2</div>
-  </ScrollReveal>
-  <ScrollReveal animation="fade-up" delay={200}>
-    <div>Feature 3</div>
-  </ScrollReveal>
-</div>
-```
-
-### OG-Image
-
-- RootLayout unterstützt `ogImage` und `ogType` Props.
-- OG/Twitter-Image-Tags werden nur gerendert wenn `ogImage` explizit gesetzt ist. Ohne `ogImage` wird kein Bild-Tag ausgegeben.
-- Jedes Projekt sollte, wenn es sich anbietet, ein eigenes OG-Image erstellen (1200×630px) und als `ogImage`-Prop an RootLayout übergeben: `<RootLayout ogImage="/og.png">`
-- Für Unterseiten mit eigenem OG-Image: den Pfad pro Seite setzen.
-
-## Design-Prinzipien
-
-### Visuelle Identität pro Projekt
-
-Jedes Projekt bekommt eine eigene visuelle Persönlichkeit. Bevor du Code schreibst, entscheide dich für einen Gestaltungsansatz: Ist die Seite luftig und elegant? Kompakt und direkt? Verspielt? Editorial? Bold und plakatartig?
-
-Leite daraus konkrete Entscheidungen ab: Wie groß ist die Typografie? Wie viel Whitespace? Wie dicht stehen Elemente beieinander? Welche Farben dominieren?
-
-### Anti-Patterns — vermeide diese AI-typischen Muster
-
-- **Nicht das Standard-Layout kopieren**: Nicht jede Seite braucht das Muster "zentrierter Hero → 3er-Karten-Grid → Testimonials → CTA". Das ist das Standardlayout das jeder AI-Builder ausspuckt. Brich bewusst davon ab.
-- **Nicht jede Sektion braucht zentrierten Titel mit Untertitel darunter.** Titel können links stehen, können übergroß sein, können in die nächste Sektion reinragen, können fehlen.
-- **Nicht jede Aufzählung muss ein gleichmäßiges Grid sein.** Nutze auch: gestaffelte Layouts, eine einzelne große Karte neben zwei kleinen, horizontale Scrollbereiche, oder einfach gut gesetzte Fließtext-Absätze.
-- **Vermeide generische Stockfoto-Beschreibungen.** Wenn Bilder gebraucht werden, nutze Platzhalter-Services oder beschreibe dem Kunden was dort hin soll.
-- **Vermeide den "AI-Look"**: Übermäßiger Einsatz von Schatten, abgerundete Karten mit Border und gleich große Icons in einem Grid.
-- **Vermeide einheitliche Container-Breiten**: Nicht jede Sektion in `max-w-7xl mx-auto` packen. Manche Sektionen dürfen volle Breite nutzen, manche bewusst schmaler sein (`max-w-2xl`, `max-w-4xl`). Der Wechsel der Container-Breiten erzeugt visuellen Rhythmus.
-
-### Gestaltungsregeln
-
-- **Kontrast durch Abwechslung**: Wechsle zwischen Sektionen mit viel Whitespace und kompakteren Bereichen. Zwischen hellen und farbigen Hintergründen. Zwischen großer und normaler Typografie. Der Wechsel erzeugt Spannung.
-- **Weniger ist oft besser**: Eine Landing Page mit 4 starken Sektionen schlägt eine mit 8 generischen. Nicht jede mögliche Information muss auf die Startseite.
-- **Typografie als Gestaltungselement**: Übergroße Headlines (`text-5xl` bis `text-8xl`), bewusst gesetzte `leading-tight`/`tracking-tight` Kombinationen, oder ein einzelner Satz der eine ganze Viewport-Höhe einnimmt — Typografie kann das stärkste visuelle Element der Seite sein.
-- **Farbflächen statt Karten**: Statt alles in `bg-card rounded-lg border shadow` Karten zu packen, nutze farbige Sektions-Hintergründe (`bg-primary`, `bg-muted`, eine Custom-Farbe aus dem Theme), volle Breite, mit Content darin. Das wirkt erwachsener als Karten-Layouts.
-- **Bewusster Einsatz von `bg-primary`**: Die Primärfarbe nicht nur für Buttons nutzen, sondern auch für ganze Sektionen, große Flächen, oder typografische Akzente. Das verankert die Markenfarbe in der Seite.
-
-### Responsive-Strategie
-
-- Mobile ist nicht "Desktop kleiner machen". Überlege bei jeder Sektion: Was ändert sich auf Mobile tatsächlich? Große Headlines werden kleiner, aber nicht winzig. Mehrspaltige Layouts stacken, aber vielleicht nicht alle — manche Inhalte können auf Mobile einfach entfallen oder anders dargestellt werden.
-- Nutze die volle Breite des Tailwind Breakpoint-Systems: `sm:`, `md:`, `lg:`, `xl:` — nicht nur `md:` für den einen Breakpoint.
-
-### Komponenten-Einsatz
-
-- shadcn/ui-Komponenten sind Werkzeuge, nicht Bausteine. Nutze sie für interaktive Elemente (Accordion für FAQs, Sheet für Mobile-Nav, Button für CTAs), aber bau Sektions-Layouts in reinem HTML + Tailwind. Eine Landing Page die hauptsächlich aus shadcn-Cards und -Badges besteht sieht aus wie ein Dashboard, nicht wie eine Marketing-Seite.
-- Vermeide Dashboard-UI-Komponenten auf Landing Pages: Table, Command, Combobox, Calendar, Resizable, Menubar haben auf einer Landing Page nichts verloren.
-
-## Deployment
-
-Docker-based with nginx reverse proxy. See `docker/README.md` for details. Auto-rebuilds on git push to the watched branch.
+1. What is the visual archetype?
+2. What makes the page visually different from a default SaaS landing page?
+3. Where is the recurring motif?
+4. Which sections break the container rhythm?
+5. Which tokens beyond `primary` carry the brand?
+6. Did the design audit pass?

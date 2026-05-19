@@ -25,17 +25,18 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : undefined;
 ---
 
-<html lang="de">
+<html lang="de" data-font-recipe={config.design.fontRecipe}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="canonical" href={canonicalURL} />
     <Font cssVariable="--font-inter" />
-
+    <Font cssVariable="--font-space-grotesk" />
+    <Font cssVariable="--font-fraunces" />
+    <Font cssVariable="--font-bricolage" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
 
-    {/* Open Graph */}
     <meta property="og:title" content={title} />
     {description && <meta property="og:description" content={description} />}
     <meta property="og:url" content={canonicalURL} />
@@ -44,11 +45,7 @@ const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : undefined;
     <meta property="og:locale" content="de_DE" />
     <meta property="og:site_name" content={config.name} />
 
-    {/* Twitter Card */}
-    <meta
-      name="twitter:card"
-      content={ogImageURL ? "summary_large_image" : "summary"}
-    />
+    <meta name="twitter:card" content={ogImageURL ? "summary_large_image" : "summary"} />
     <meta name="twitter:title" content={title} />
     {description && <meta name="twitter:description" content={description} />}
     {ogImageURL && <meta name="twitter:image" content={ogImageURL} />}
@@ -58,29 +55,26 @@ const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : undefined;
         import.meta.hot.on("vite:beforeFullReload", (payload) => {
           const until = (window as Window & { __veSuppressReloadUntil?: number }).__veSuppressReloadUntil;
           if (!until || Date.now() >= until) return;
+
           if ("preventDefault" in payload && typeof payload.preventDefault === "function") {
             payload.preventDefault();
           }
-          // Reload stylesheets in place so CSS changes (new Tailwind utilities,
-          // edited globals) are visible without a hard reload that would
-          // disrupt the visual editor's selection/scroll state.
+
           const stamp = String(Date.now());
-          document
-            .querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')
-            .forEach((link) => {
-              try {
-                const url = new URL(link.href, location.href);
-                url.searchParams.set("vehmr", stamp);
-                const next = link.cloneNode() as HTMLLinkElement;
-                next.href = url.href;
-                const drop = () => link.remove();
-                next.addEventListener("load", drop, { once: true });
-                next.addEventListener("error", drop, { once: true });
-                link.parentNode?.insertBefore(next, link.nextSibling);
-              } catch {
-                // ignore malformed stylesheet hrefs
-              }
-            });
+          document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]').forEach((link) => {
+            try {
+              const url = new URL(link.href, location.href);
+              url.searchParams.set("vehmr", stamp);
+              const next = link.cloneNode() as HTMLLinkElement;
+              next.href = url.href;
+              const drop = () => link.remove();
+              next.addEventListener("load", drop, { once: true });
+              next.addEventListener("error", drop, { once: true });
+              link.parentNode?.insertBefore(next, link.nextSibling);
+            } catch {
+              // Ignore malformed stylesheet hrefs.
+            }
+          });
         });
       }
     </script>

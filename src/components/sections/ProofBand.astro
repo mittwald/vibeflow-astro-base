@@ -1,0 +1,21 @@
+---
+const metrics = [
+  ["24h", "Rueckmeldung auf Anfragen"],
+  ["30 km", "Einsatzgebiet um Musterstadt"],
+  ["1", "fester Ansprechpartner"],
+  ["klar", "Angebot vor Arbeitsbeginn"],
+];
+---
+
+<section class="px-5 py-14">
+  <div class="mx-auto max-w-6xl rounded-4xl bg-primary-soft px-6 py-8 text-primary-soft-foreground md:px-10">
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      {metrics.map(([value, label]) => (
+        <div>
+          <p class="font-heading text-5xl font-semibold tracking-tight">{value}</p>
+          <p class="mt-2 max-w-44 text-sm leading-relaxed opacity-75">{label}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

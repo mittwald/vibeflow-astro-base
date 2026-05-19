@@ -1,0 +1,21 @@
+---
+import { Icon } from "astro-icon/components";
+
+const points = [
+  ["lucide:calendar-check", "Feste Termine", "Sie wissen, wann jemand kommt und was erledigt wird."],
+  ["lucide:message-circle", "Direkte Abstimmung", "Ein Ansprechpartner statt wechselnder Zwischenstationen."],
+  ["lucide:shield-check", "Saubere Ausfuehrung", "Ordentliche Baustelle, nachvollziehbares Angebot, klare Abnahme."],
+];
+---
+
+<section id="referenzen" class="px-5 py-14">
+  <div class="mx-auto grid max-w-6xl gap-4 md:grid-cols-3">
+    {points.map(([icon, title, text]) => (
+      <article class="border-border bg-background/80 rounded-3xl border p-6">
+        <Icon name={icon} class="text-primary h-6 w-6" />
+        <h2 class="font-heading mt-5 text-2xl font-semibold tracking-tight">{title}</h2>
+        <p class="text-muted-foreground mt-3 text-sm leading-relaxed">{text}</p>
+      </article>
+    ))}
+  </div>
+</section>

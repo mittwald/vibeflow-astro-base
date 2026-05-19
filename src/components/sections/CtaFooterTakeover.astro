@@ -1,0 +1,24 @@
+---
+import VisualMotif from "@/components/visual/VisualMotif.astro";
+import { config } from "@/config";
+---
+
+<section class="px-5 py-20">
+  <div class="bg-surface-strong text-surface-strong-foreground mx-auto grid max-w-6xl overflow-hidden rounded-4xl md:grid-cols-[1.1fr_.9fr]">
+    <div class="p-8 sm:p-12 lg:p-14">
+      <p class="text-sm font-semibold uppercase tracking-[0.24em] text-white/60">Kontakt</p>
+      <h2 class="font-heading mt-5 max-w-2xl text-4xl leading-tight font-semibold tracking-tight sm:text-6xl">
+        Ein kurzer Anruf klaert meistens schon den naechsten Schritt.
+      </h2>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a href={config.navigation.cta.href} class="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex justify-center rounded-full px-6 py-3 text-sm font-semibold transition-colors">
+          {config.navigation.cta.label}
+        </a>
+        <a href={`tel:${config.business.phone.replaceAll(" ", "")}`} class="border-white/20 text-surface-strong-foreground hover:bg-white/10 inline-flex justify-center rounded-full border px-6 py-3 text-sm font-semibold transition-colors">
+          {config.business.phone}
+        </a>
+      </div>
+    </div>
+    <VisualMotif kind="ribbons" class="min-h-80 rounded-none" />
+  </div>
+</section>
