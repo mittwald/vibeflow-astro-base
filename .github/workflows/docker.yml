@@ -2,7 +2,7 @@ name: Build and push Docker image
 
 on:
   push:
-    branches: [master]
+    branches: [master, experiment]
   workflow_dispatch:
 
 env:
@@ -33,7 +33,8 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=sha
-            type=raw,value=latest
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' }}
+            type=raw,value=experiment,enable=${{ github.ref == 'refs/heads/experiment' }}
 
       - uses: docker/build-push-action@v6
         with:
