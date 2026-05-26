@@ -56,9 +56,14 @@ const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : undefined;
     <script>
       if (import.meta.hot) {
         import.meta.hot.on("vite:beforeFullReload", (payload) => {
-          const until = (window as Window & { __veSuppressReloadUntil?: number }).__veSuppressReloadUntil;
+          const until = (
+            window as Window & { __veSuppressReloadUntil?: number }
+          ).__veSuppressReloadUntil;
           if (!until || Date.now() >= until) return;
-          if ("preventDefault" in payload && typeof payload.preventDefault === "function") {
+          if (
+            "preventDefault" in payload &&
+            typeof payload.preventDefault === "function"
+          ) {
             payload.preventDefault();
           }
           // Reload stylesheets in place so CSS changes (new Tailwind utilities,
