@@ -25,6 +25,7 @@ src/
     RootLayout.astro    # Root HTML layout mit Header, Footer, Font, SEO-Meta
     Header.astro        # Responsive Header mit Desktop-Nav und mobilem Menü
     Footer.astro        # Footer mit Copyright und Links
+    DesktopNav.tsx      # Desktop-Navigation mit Hover-Dropdowns (shadcn NavigationMenu)
     MobileNav.tsx       # Mobile Navigation (shadcn Sheet, von rechts)
     ContactForm.tsx     # Kontaktformular (React, valibot, Honeypot, Time-Based)
     ui/                 # shadcn/ui components
@@ -88,7 +89,10 @@ public/
 - `config.name`: Seitenname, wird in Header, Footer, Mobile Nav und Seitentiteln verwendet
 - `config.tagline`: Tagline, wird auf der Startseite angezeigt
 - `config.site`: URL der Seite — **WICHTIG: muss auch in `astro.config.mjs` (Zeile 10) identisch gepflegt werden** (Astro kann `config.ts` nicht importieren wegen Vite-Init). `allowedDomains` in `astro.config.mjs` leitet sich automatisch aus der dortigen URL ab.
-- `config.navigation.header` / `config.navigation.footer`: Nav-Links als `{ label, href }[]`
+- `config.navigation.header` / `config.navigation.footer`: Nav-Links vom Typ `NavLink[]` (aus `config.ts`)
+  - Einfacher Link: `{ label, href }`
+  - Dropdown (Hover-Menü mit Unterlinks): `{ label, items: [{ label, href }, …] }` — `href` am Dropdown-Eintrag ist optional (z.B. Übersichtsseite)
+  - Hat ein Header-Eintrag `items`, rendert `Header.astro` automatisch die interaktive `DesktopNav`-Island (`client:load`). Ohne Dropdown bleibt die Desktop-Nav statisches HTML ohne Client-JS. Das mobile Menü (`MobileNav`) zeigt Unterlinks als eingerückte Gruppe.
 - `config.smtp`: SMTP-Zugangsdaten für Kontaktformular. Default-Host: `mail.agenturserver.de`. STARTTLS: Port 25/587 (`secure: false`), SSL: Port 465 (`secure: true`). Default ist STARTTLS auf Port 587.
 - `config.erecht24.apiKey`: API-Key für eRecht24 Impressum/Datenschutz — ohne Key werden Platzhalter ausgeliefert
 

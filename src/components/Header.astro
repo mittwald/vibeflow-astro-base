@@ -1,11 +1,14 @@
 ---
 import { config } from "@/config";
 import { MobileNav } from "@/components/MobileNav";
+import { DesktopNav } from "@/components/DesktopNav";
 import { Icon } from "astro-icon/components";
 
 const { name, navigation } = config;
 const links = navigation.header;
 const currentPath = Astro.url.pathname;
+
+const hasDropdown = links.some((link) => (link.items?.length ?? 0) > 0);
 ---
 
 <header class="border-border border-b">
@@ -25,29 +28,33 @@ const currentPath = Astro.url.pathname;
     <div class="flex items-center gap-6">
       {/* Desktop */}
       {
-        links.length > 0 && (
-          <ul class="hidden items-center gap-6 md:flex">
-            {links.map((link) => {
-              const isActive =
-                currentPath === link.href || currentPath === link.href + "/";
-              return (
-                <li>
-                  <a
-                    href={link.href}
-                    class:list={[
-                      "text-sm transition-colors",
-                      isActive
-                        ? "text-foreground font-medium"
-                        : "text-muted-foreground hover:text-foreground",
-                    ]}
-                    aria-current={isActive ? "page" : undefined}
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
+        hasDropdown ? (
+          <DesktopNav links={links} currentPath={currentPath} client:load />
+        ) : (
+          links.length > 0 && (
+            <ul class="hidden items-center gap-6 md:flex">
+              {links.map((link) => {
+                const isActive =
+                  currentPath === link.href || currentPath === link.href + "/";
+                return (
+                  <li>
+                    <a
+                      href={link.href}
+                      class:list={[
+                        "text-sm transition-colors",
+                        isActive
+                          ? "text-foreground font-medium"
+                          : "text-muted-foreground hover:text-foreground",
+                      ]}
+                      aria-current={isActive ? "page" : undefined}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          )
         )
       }
 

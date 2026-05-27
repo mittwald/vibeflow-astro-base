@@ -10,11 +10,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-
-interface NavLink {
-  label: string;
-  href: string;
-}
+import type { NavLink } from "@/config";
 
 export function MobileNav({ links, name }: { links: NavLink[]; name: string }) {
   return (
@@ -39,15 +35,34 @@ export function MobileNav({ links, name }: { links: NavLink[]; name: string }) {
           </SheetHeader>
 
           <nav className="flex flex-1 flex-col gap-1 px-4 py-4">
-            {links.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-foreground hover:bg-muted rounded-md px-3 py-3 text-base font-medium transition-colors"
-              >
-                {link.label}
-              </a>
-            ))}
+            {links.map((link) =>
+              link.items && link.items.length > 0 ? (
+                <div key={link.label} className="py-1">
+                  <p className="text-muted-foreground px-3 py-2 text-sm font-medium">
+                    {link.label}
+                  </p>
+                  <div className="flex flex-col gap-0.5">
+                    {link.items.map((item) => (
+                      <a
+                        key={item.href}
+                        href={item.href}
+                        className="text-foreground hover:bg-muted rounded-md px-3 py-2.5 pl-6 text-base transition-colors"
+                      >
+                        {item.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="text-foreground hover:bg-muted rounded-md px-3 py-3 text-base font-medium transition-colors"
+                >
+                  {link.label}
+                </a>
+              ),
+            )}
           </nav>
         </div>
       </SheetContent>
