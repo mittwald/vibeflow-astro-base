@@ -40,7 +40,16 @@ log "Installing dependencies..."
 pnpm install --frozen-lockfile
 
 log "Building site..."
-pnpm build
+# Build into a versioned release dir (never in-place): a failed rebuild must
+# never destroy the dist the running server serves from. See rebuild.sh.
+# A node_modules symlink next to it lets the prerender step and the runtime
+# server resolve bare imports (clsx, react, …) from the mounted /site.
+REL_BASE="/tmp/releases/4321"
+RELEASE_DIR="$REL_BASE/dist"
+rm -rf "$RELEASE_DIR"
+mkdir -p "$REL_BASE"
+ln -sfn "$SITE_DIR/node_modules" "$REL_BASE/node_modules"
+pnpm exec astro build --outDir "$RELEASE_DIR"
 
 # Log config summary
 node -e "
@@ -56,7 +65,7 @@ import('./src/config.ts').then(m => {
 "
 
 log "Starting Astro server on port 4321..."
-HOST=0.0.0.0 PORT=4321 node dist/server/entry.mjs &
+HOST=0.0.0.0 PORT=4321 node "$RELEASE_DIR/server/entry.mjs" &
 echo "$!" > /tmp/astro_pid
 log "Astro server started (PID $!)"
 
@@ -64,6 +73,14 @@ log "Astro server started (PID $!)"
 touch /tmp/nginx-access.log /tmp/nginx-error.log
 tail -f /tmp/nginx-access.log &
 tail -f /tmp/nginx-error.log >&2 &
+
+# rebuild.sh rewrites the upstream port and static root in nginx.conf in place,
+# and those edits survive a container restart. Normalize back to the initial
+# release (4321) so a restart after a deploy that ended on 4322 doesn't 502.
+sed -i \
+  -e "s|server 127.0.0.1:[0-9]*|server 127.0.0.1:4321|" \
+  -e "s|root /tmp/releases/[0-9]*/dist/client|root /tmp/releases/4321/dist/client|" \
+  /etc/nginx/nginx.conf
 
 log "Starting nginx..."
 nginx -g "daemon off;" &

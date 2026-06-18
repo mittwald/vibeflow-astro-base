@@ -34,11 +34,26 @@ while [ -f "$PENDING_FILE" ]; do
   fi
   OLD_PID=$(cat /tmp/astro_pid)
 
+  # Build into the standby slot's release dir. The live release (ACTIVE_PORT)
+  # is never touched, so a failed install/build leaves the running site intact.
+  # The node_modules symlink lets prerender/runtime resolve bare imports.
+  REL_BASE="/tmp/releases/$NEW_PORT"
+  NEW_RELEASE="$REL_BASE/dist"
+
   log "Installing dependencies..."
-  pnpm install --frozen-lockfile
+  if ! pnpm install --frozen-lockfile; then
+    log "ERROR: dependency install failed, keeping current release"
+    continue
+  fi
 
   log "Building site..."
-  pnpm build
+  rm -rf "$NEW_RELEASE"
+  mkdir -p "$REL_BASE"
+  ln -sfn "$SITE_DIR/node_modules" "$REL_BASE/node_modules"
+  if ! pnpm exec astro build --outDir "$NEW_RELEASE"; then
+    log "ERROR: build failed, keeping current release"
+    continue
+  fi
 
   # Log config summary
   node -e "
@@ -53,7 +68,7 @@ while [ -f "$PENDING_FILE" ]; do
 
   log "Starting Astro server on port $NEW_PORT..."
   # Close fd 9 (lock fd) so the long-running server doesn't keep the rebuild lock held.
-  HOST=0.0.0.0 PORT=$NEW_PORT node dist/server/entry.mjs 9<&- &
+  HOST=0.0.0.0 PORT=$NEW_PORT node "$NEW_RELEASE/server/entry.mjs" 9<&- &
   NEW_PID=$!
 
   # Wait for new server to be ready
@@ -72,21 +87,30 @@ while [ -f "$PENDING_FILE" ]; do
     continue
   fi
 
-  # Swap nginx upstream and reload
-  sed -i "s/server 127.0.0.1:$ACTIVE_PORT/server 127.0.0.1:$NEW_PORT/" /etc/nginx/nginx.conf
+  # Atomically point nginx at the new release: upstream port (SSR) and static
+  # root both swap in a single reload.
+  sed -i \
+    -e "s|server 127.0.0.1:$ACTIVE_PORT|server 127.0.0.1:$NEW_PORT|" \
+    -e "s|root /tmp/releases/[0-9]*/dist/client|root $NEW_RELEASE/client|" \
+    /etc/nginx/nginx.conf
 
   if nginx -t 2>/dev/null; then
     nginx -s reload
     log "nginx switched to port $NEW_PORT"
   else
-    log "ERROR: nginx config invalid after port swap, reverting"
-    sed -i "s/server 127.0.0.1:$NEW_PORT/server 127.0.0.1:$ACTIVE_PORT/" /etc/nginx/nginx.conf
+    log "ERROR: nginx config invalid after swap, reverting"
+    sed -i \
+      -e "s|server 127.0.0.1:$NEW_PORT|server 127.0.0.1:$ACTIVE_PORT|" \
+      -e "s|root $NEW_RELEASE/client|root /tmp/releases/$ACTIVE_PORT/dist/client|" \
+      /etc/nginx/nginx.conf
     kill "$NEW_PID" 2>/dev/null || true
     continue
   fi
 
-  # Stop old server
+  # Stop old server — but first let nginx's old worker processes drain any
+  # in-flight requests still routed to the old upstream, otherwise they 502.
   if [ -n "$OLD_PID" ]; then
+    sleep 2
     kill "$OLD_PID" 2>/dev/null || true
     wait "$OLD_PID" 2>/dev/null || true
   fi

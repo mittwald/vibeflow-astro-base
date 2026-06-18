@@ -62,21 +62,24 @@ When someone pushes to the watched branch:
 1. inotifywait detects the ref change (git uses atomic rename)
 2. SHA is compared to prevent duplicate rebuilds
 3. `flock` prevents concurrent rebuilds
-4. `pnpm install` + `pnpm build` runs
-5. New Astro server starts on standby port (4322)
+4. `pnpm install` runs, then the site is built into a fresh release dir
+   (`/tmp/releases/<port>/dist`) — never in place, so the live release is
+   never touched by a build that fails
+5. New Astro server starts on standby port (4322) from the new release dir
 6. Health check waits up to 30s for the new server
 7. nginx config is updated and validated with `nginx -t`
-8. nginx reloads to swap upstream
-9. Old Astro server is stopped
+8. nginx reloads to swap both the upstream port and the static `root`
+9. In-flight requests drain, then the old Astro server is stopped
 
-If the new server fails to start or nginx config validation fails, the old server keeps running.
+If `pnpm install`, the build, the new server, or `nginx -t` fails, the old
+release keeps serving untouched and the deploy is aborted.
 
 ### Caching Strategy
 
 | Path                                         | Cache                   | Reason                                            |
 | -------------------------------------------- | ----------------------- | ------------------------------------------------- |
-| `/_astro/*`                                  | 1 year, immutable       | Hashed filenames — content changes = new filename |
-| Static assets (`.js`, `.css`, images, fonts) | 1 hour, must-revalidate | Files from `public/` without hash                 |
+| `/_astro/*` (`^~` prefix)                    | 1 year, immutable       | Hashed filenames — content changes = new filename |
+| Other static assets (images, fonts, …)       | 1 hour, must-revalidate | Files from `public/` without hash                 |
 | Everything else                              | No cache                | Proxied to Astro (SSR or pre-rendered)            |
 
 ## Astro Configuration
@@ -97,16 +100,22 @@ export default defineConfig({
 
 ## Testing
 
-Run the integration test on a Linux machine (inotify requires native bind mounts):
+Build the image and run it against a mounted git checkout:
 
 ```bash
-./docker/test.sh
+docker build -t astro-nginx -f docker/Dockerfile docker/
+docker run -p 8080:8080 -v /path/to/astro-repo:/site -e WATCH_BRANCH=master astro-nginx
 ```
 
-Tests: initial build, HTTP 200, auto-rebuild on commit, port swap verification, post-rebuild serving.
+A rebuild can be triggered by pushing to the watched branch, or manually with
+`docker exec <container> /rebuild.sh`. Verify: HTTP 200, port swap
+(`/tmp/active_port` flips 4321↔4322), new content served, and that a build with
+a syntax error leaves the old release serving (still HTTP 200).
 
 ## Limitations
 
-- **macOS/Docker Desktop**: inotifywait does not receive filesystem events through the VM. Use a Linux host for auto-rebuild.
+- **macOS/Docker Desktop**: inotify events over the VM bind mount are
+  unreliable — auto-rebuild on push may not fire. Use a Linux host (native bind
+  mount) for dependable auto-rebuild; `/rebuild.sh` itself works on any host.
 - **Concurrent rapid pushes**: Protected by flock — only one rebuild runs at a time. Pushes during a rebuild trigger a new rebuild after the current one finishes.
 - **pnpm store**: The global package cache lives in `/tmp/pnpm-store` inside the container and is lost on restart. `node_modules` is written to the mounted volume and persists. First build after restart may be slightly slower due to store rebuild.
