@@ -1,4 +1,5 @@
 // @ts-check
+import { existsSync } from "node:fs";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, fontProviders } from "astro/config";
 import react from "@astrojs/react";
@@ -9,6 +10,10 @@ import favicons from "astro-favicons";
 import elementIds from "./plugins/vite-plugin-element-ids";
 // Keep in sync with config.site in src/config.ts
 const site = "https://example.com";
+
+const faviconSource = ["public/favicon.svg", "public/favicon.png"].find(
+  (path) => existsSync(path),
+);
 
 // https://astro.build/config
 export default defineConfig({
@@ -71,5 +76,10 @@ export default defineConfig({
     enabled: false,
   },
 
-  integrations: [react(), icon(), sitemap(), favicons()],
+  integrations: [
+    react(),
+    icon(),
+    sitemap(),
+    ...(faviconSource ? [favicons({ input: faviconSource })] : []),
+  ],
 });
